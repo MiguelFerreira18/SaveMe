@@ -1,0 +1,127 @@
+package com.money.SaveMe.Model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Entity
+public class User implements UserDetails {
+    @Id
+    @UuidGenerator
+    private String id;
+
+    @Column(nullable = false, unique = true)
+    @Email
+    private String email;
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only letters and numbers")
+    protected String name;
+
+    @Column(nullable = false)
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> authorities = new HashSet<>();
+
+
+    public void setPassword(String password, PasswordEncoder encoder) {
+        if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,128}$")) {
+            this.password = encoder.encode(password);
+        } else {
+            throw new IllegalArgumentException("Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character");
+        }
+    }
+
+
+    public void addAuthority(Role role) {
+        authorities.add(role);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @PrePersist
+    public void ensureId() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public @Email String getEmail() {
+        return email;
+    }
+
+    public @Size(min = 3, max = 20) @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only letters and numbers") String getName() {
+        return name;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setEmail(@Email String email) {
+        this.email = email;
+    }
+
+    public void setName(@Size(min = 3, max = 20) @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only letters and numbers") String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
+    }
+}
