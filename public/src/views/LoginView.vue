@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { post, get } from '@/lib/requests'
 
 const toasts = ref([])
 const showToast = (message, type = 'info') => {
@@ -28,16 +29,19 @@ const registerEmail = ref('')
 const registerPassword = ref('')
 const registerRepeatPassword = ref('')
 
-const handleLogin = () => {
+async function handleLogin() {
   if (!loginEmail.value || !loginPassword.value) {
     showToast('Please fill in all fields.', 'error')
     return
   }
-  showToast('Login Success', 'success')
+  const response = await post('/auth/public/login', {
+    email: loginEmail.value,
+    password: loginPassword.value,
+  })
   console.log('Logging in with:', loginEmail.value, loginPassword.value)
 }
 
-const handleRegister = async () => {
+async function handleRegister() {
   if (
     !registerName.value ||
     !registerEmail.value ||
@@ -54,14 +58,10 @@ const handleRegister = async () => {
   }
 
   try {
-    const response = await fetch('https://xxx.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: registerName.value,
-        email: registerEmail.value,
-        password: registerPassword.value,
-      }),
+    const response = await post('/auth/public/signup', {
+      name: registerName.value,
+      email: registerEmail.value,
+      password: registerPassword.value,
     })
 
     if (!response.ok) {
