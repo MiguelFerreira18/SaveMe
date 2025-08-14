@@ -1,0 +1,7 @@
+package com.money.SaveMe;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Currency {
+  }

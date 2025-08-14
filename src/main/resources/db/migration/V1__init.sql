@@ -27,9 +27,12 @@ CREATE TABLE IF NOT EXISTS user_authority
 CREATE TABLE IF NOT EXISTS currency
 (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id       VARCHAR(255)   NOT NULL,
     name          VARCHAR(50)    NOT NULL,
     symbol        VARCHAR(10)    NOT NULL,
-    exchange_rate DECIMAL(10, 6) NOT NULL
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS strategy_type
