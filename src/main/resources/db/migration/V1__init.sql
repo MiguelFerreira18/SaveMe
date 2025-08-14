@@ -8,14 +8,19 @@ CREATE TABLE IF NOT EXISTS user
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS user_authorities
+CREATE TABLE IF NOT EXISTS authority
 (
-    user_id   VARCHAR(255) NOT NULL,
-    authorities VARCHAR(50)  NOT NULL,
-    authority VARCHAR(50) NOT NULL,
-    PRIMARY KEY (user_id, authorities),
-    CONSTRAINT fk_user_authorities_user FOREIGN KEY (user_id)
-        REFERENCES user (id) ON DELETE CASCADE
+    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    authority VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS user_authority
+(
+    user_id      VARCHAR(255) NOT NULL,
+    authority_id BIGINT       NOT NULL,
+    PRIMARY KEY (user_id, authority_id),
+    FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
+    FOREIGN KEY (authority_id) REFERENCES authority (id) ON DELETE CASCADE
 );
 
 

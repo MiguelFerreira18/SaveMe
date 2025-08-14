@@ -10,10 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,8 +31,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> authorities = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authority",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id"))
+    private List<Authority> authorities = new ArrayList<>();
+
 
 
     public void setPassword(String password, PasswordEncoder encoder) {
@@ -47,8 +48,8 @@ public class User implements UserDetails {
     }
 
 
-    public void addAuthority(Role role) {
-        authorities.add(role);
+    public void addAuthority(Authority authority) {
+        authorities.add(authority);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setAuthorities(Set<Role> authorities) {
+    public void setAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
     }
 }

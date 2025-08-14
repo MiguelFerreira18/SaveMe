@@ -1,10 +1,11 @@
 import { url } from './global/global'
-const token = localStorage.getItem('token').trim()
+const dirtyToken = localStorage.getItem('token')
+const token = !dirtyToken || dirtyToken === 'undefined' ? '' : dirtyToken.trim()
 const headers = {
   'Content-Type': 'application/json',
 }
 
-async function get(path, needsAuth = false) {
+async function Get(path, needsAuth = false) {
   if (needsAuth) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -19,7 +20,7 @@ async function get(path, needsAuth = false) {
   return response
 }
 
-async function post(path, data = {}, needsAuth = false) {
+async function Post(path, data = {}, needsAuth = false) {
   if (needsAuth) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -39,7 +40,7 @@ async function post(path, data = {}, needsAuth = false) {
   return response
 }
 
-async function put(path, data = {}, needsAuth = false) {
+async function Put(path, data = {}, needsAuth = false) {
   if (needsAuth) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -59,7 +60,7 @@ async function put(path, data = {}, needsAuth = false) {
   return response
 }
 
-async function patch(path, data = {}, needsAuth = false) {
+async function Patch(path, data = {}, needsAuth = false) {
   if (needsAuth) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -79,7 +80,7 @@ async function patch(path, data = {}, needsAuth = false) {
   return response
 }
 
-async function del(path, needsAuth = false) {
+async function Del(path, needsAuth = false) {
   if (needsAuth) {
     headers.Authorization = `Bearer ${token}`
   }
@@ -94,4 +95,4 @@ async function del(path, needsAuth = false) {
   return response
 }
 
-export { get, post, put, patch, del }
+export { Get, Post, Put, Patch, Del }

@@ -1,19 +1,17 @@
 package com.money.SaveMe.Model;
 
-import lombok.Data;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserView {
     String id;
     String name;
-    Set<Role> authorities;
-
-    public UserView(String id, String name, Set<Role> authorities) {
-        this.id = id;
-        this.name = name;
-        this.authorities = authorities;
-    }
-
+    List<String> authorities;
 }

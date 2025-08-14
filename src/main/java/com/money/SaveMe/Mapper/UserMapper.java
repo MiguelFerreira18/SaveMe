@@ -1,15 +1,13 @@
 package com.money.SaveMe.Mapper;
 
 import com.money.SaveMe.Authentication.SignUpRequest;
-import com.money.SaveMe.Model.Role;
+import com.money.SaveMe.Model.Authority;
 import com.money.SaveMe.Model.User;
 import com.money.SaveMe.Model.UserView;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class UserMapper {
@@ -20,7 +18,7 @@ public class UserMapper {
 
         String id = user.getId();
         String name = user.getName();
-        Set<Role> authorities = grantedAuthorityCollectionToRoleSet(user.getAuthorities());
+        List<String> authorities = grantedAuthorityCollectionToRoleSet(user.getAuthorities());
 
         return new UserView(id, name, authorities);
     }
@@ -37,28 +35,27 @@ public class UserMapper {
         user.setPassword(signUpRequest.getPassword());
 
 
+
         return user;
     }
 
-    protected Role grantedAuthorityToRole(GrantedAuthority grantedAuthority) {
+    protected String grantedAuthorityToRole(GrantedAuthority grantedAuthority) {
         if (grantedAuthority == null) {
             return null;
         }
-
-        String authority = grantedAuthority.getAuthority();
-        return new Role(authority);
+        return grantedAuthority.getAuthority();
     }
 
-    protected Set<Role> grantedAuthorityCollectionToRoleSet(Collection<? extends GrantedAuthority> collection) {
+    protected List<String> grantedAuthorityCollectionToRoleSet(Collection<? extends GrantedAuthority> collection) {
         if (collection == null) {
             return null;
         }
 
-        Set<Role> set = new LinkedHashSet<>(Math.max((int) (collection.size() / .75f) + 1, 16));
+        List<String> list = new ArrayList<>();
         for (GrantedAuthority grantedAuthority : collection) {
-            set.add(grantedAuthorityToRole(grantedAuthority));
+            list.add(grantedAuthorityToRole(grantedAuthority));
         }
 
-        return set;
+        return list;
     }
 }

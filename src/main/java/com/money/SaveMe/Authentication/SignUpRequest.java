@@ -26,11 +26,6 @@ public class SignUpRequest {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,128}$", message = "Password must contain at least one letter and one number")
     String repeatPassword;
 
-    String pushToken;
-
-
-    Set<String> preferredCategories;
-
     public @NotNull @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username must contain only letters and numbers") String getName() {
         return name;
     }
@@ -47,11 +42,4 @@ public class SignUpRequest {
         return repeatPassword;
     }
 
-    public String getPushToken() {
-        return pushToken;
-    }
-
-    public Set<String> getPreferredCategories() {
-        return preferredCategories;
-    }
 }

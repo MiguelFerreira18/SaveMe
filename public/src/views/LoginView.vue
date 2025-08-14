@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { post, get } from '@/lib/requests'
+import { Post } from '@/lib/requests'
+import { IsJWTExpired, SaveJwtFieldsToLocalStorage, ParseJwt } from '@/lib/jwtUtils'
+import router from '@/router'
 
 const toasts = ref([])
 const showToast = (message, type = 'info') => {
@@ -34,11 +36,30 @@ async function handleLogin() {
     showToast('Please fill in all fields.', 'error')
     return
   }
-  const response = await post('/auth/public/login', {
+  const response = await Post('/auth/public/login', {
     email: loginEmail.value,
     password: loginPassword.value,
   })
-  console.log('Logging in with:', loginEmail.value, loginPassword.value)
+
+  if (!response.ok) {
+    showToast('Login failed', 'error')
+  } else {
+    showToast('Login successful', 'success')
+  }
+
+  const user = await response.json()
+  console.log(response)
+  const authHeader = response.headers.get('authorization')
+
+  if (authHeader && !IsJWTExpired(authHeader)) {
+    localStorage.setItem('userId', user.id)
+    localStorage.setItem('username', user.name)
+    SaveJwtFieldsToLocalStorage(ParseJwt(authHeader))
+    localStorage.setItem('token', authHeader)
+  }
+  setTimeout(() => {
+    router.push('/home')
+  }, 2000)
 }
 
 async function handleRegister() {
@@ -62,6 +83,7 @@ async function handleRegister() {
       name: registerName.value,
       email: registerEmail.value,
       password: registerPassword.value,
+      repeatPassword: registerRepeatPassword.value,
     })
 
     if (!response.ok) {
@@ -170,34 +192,4 @@ async function handleRegister() {
   </div>
 </template>
 
-<style lang="css" scoped>
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.animate-fade-out {
-  animation: fadeOut 0.3s ease-out forwards;
-}
-</style>
+<style lang="css" scoped></style>

@@ -14,7 +14,6 @@ public class SignInRequest {
     @NotNull
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,128}$", message = "Password must contain at least one letter and one number")
     String password;
-    String pushToken;
 
     public @NotNull @Email(message = "Invalid email format") String getEmail() {
         return email;
@@ -24,7 +23,4 @@ public class SignInRequest {
         return password;
     }
 
-    public String getPushToken() {
-        return pushToken;
-    }
 }

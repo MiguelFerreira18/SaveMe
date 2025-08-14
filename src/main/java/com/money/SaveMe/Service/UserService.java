@@ -1,18 +1,17 @@
 package com.money.SaveMe.Service;
 
-import com.money.SaveMe.Model.Role;
+import com.money.SaveMe.Model.Authority;
 import com.money.SaveMe.Model.User;
 import com.money.SaveMe.Model.UserView;
+import com.money.SaveMe.Repo.AuthorityRepo;
 import com.money.SaveMe.Repo.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,24 +20,29 @@ public class UserService implements UserDetailsService {
 
 
     private final UserRepo userRepo;
+    private final AuthorityRepo authorityRepo;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, AuthorityRepo authorityRepo) {
         this.userRepo = userRepo;
+        this.authorityRepo = authorityRepo;
     }
 
     public Optional<User> saveUser(User user) {
 
+        Optional<Authority> authorityOpt = authorityRepo.findByAuthority(Authority.Role.USER);
+        if (authorityOpt.isEmpty()) {
+            return Optional.empty();
+        }
         Optional<User> userOptional;
         try {
             user.setPassword(user.getPassword());
-            user.addAuthority(new Role(Role.USER));
+            user.addAuthority(authorityOpt.get());
             userOptional = Optional.of(userRepo.save(user));
         } catch (Exception e) {
             return Optional.empty();
         }
         return userOptional;
     }
-
 
 
     @Transactional
@@ -51,18 +55,4 @@ public class UserService implements UserDetailsService {
         throw new UsernameNotFoundException("User not found with email: " + email);
     }
 
-
-
-    public UserView toUserView(User user) {
-        if (user == null) {
-            return null;
-        }
-
-        String id = user.getId();
-        String name = user.getName();
-        Set<Role> authorities = null;
-
-        return new UserView(id, name, authorities);
-
-    }
 }
