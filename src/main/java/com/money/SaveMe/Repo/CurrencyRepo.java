@@ -16,7 +16,7 @@ public interface CurrencyRepo extends CrudRepository<Currency,Long> {
     Iterable<Currency> findAllCurrenciesByUserId(String userId);
 
     @Query("SELECT c FROM Currency c WHERE c.id = ?1 AND c.user.id = ?2")
-    Optional<Currency> findCUrrencyByIdAndUserId(Long id, String userUUID);
+    Optional<Currency> findCurrencyByIdAndUserId(Long id, String userUUID);
 
     @Transactional
     @Modifying

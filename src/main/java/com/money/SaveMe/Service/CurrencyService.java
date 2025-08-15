@@ -27,8 +27,8 @@ public class CurrencyService {
 
     public Currency getCurrencyById(Long id) {
         String userUUID = authenticationServiceUtil.getCurrentUserUuid();
-        return currencyRepo.findCUrrencyByIdAndUserId(id, userUUID)
-                .orElse(null);
+        return currencyRepo.findCurrencyByIdAndUserId(id, userUUID)
+                .orElseThrow(() -> new RuntimeException(STR."Currency not found with id: \{id} for user: \{userUUID}"));
     }
 
     public Currency saveCurrency(SaveCurrencyDto currency) {

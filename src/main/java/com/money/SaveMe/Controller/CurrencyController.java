@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("currency")
+@RequestMapping("/api/currency")
 public class CurrencyController {
 
     private final CurrencyService currencyService;

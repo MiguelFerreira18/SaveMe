@@ -3,7 +3,9 @@ package com.money.SaveMe.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -15,6 +17,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "income")
 public class Income {
     @Id
@@ -50,4 +54,10 @@ public class Income {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    public Income(User user, Currency currency, BigDecimal amount, String description) {
+        this.user = user;
+        this.currency = currency;
+        this.amount = amount;
+        this.description = description;
+    }
 }
