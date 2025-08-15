@@ -4,7 +4,10 @@ import com.money.SaveMe.Mapper.UserMapper;
 import com.money.SaveMe.Model.User;
 import com.money.SaveMe.Model.UserView;
 import com.money.SaveMe.Service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +43,18 @@ public class AuthenticationApi {
 
     private final UserMapper userMapper;
 
+    private static final String ISSUER = "example.com";
+    private static final long EXPIRATION_TIME = 36000L;
+
+    private static final int COOKIE_MAX_AGE = 900; // 15 mins
+    private static final String JWT_COOKIE_NAME = "jwt-token";
+
+    @Value("${app.cookie.domain:localhost}")
+    private String cookieDomain;
+
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
     public AuthenticationApi(AuthenticationManager authenticationManager, JwtEncoder jwtEncoder, UserService userService, UserMapper userMapper,
                              PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
@@ -50,13 +65,8 @@ public class AuthenticationApi {
 
     }
 
-    private static final String ISSUER = "example.com";
-
-    private static final long EXPIRATION_TIME = 36000L;
-
-
     @PostMapping("login")
-    public ResponseEntity<UserView> login(@RequestBody @Valid final SignInRequest request) {
+    public ResponseEntity<UserView> login(@RequestBody @Valid final SignInRequest request, HttpServletResponse response) {
 
         try {
             Authentication authentication = authenticate(request);
@@ -66,7 +76,7 @@ public class AuthenticationApi {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            return buildAuthenticationResponse(authentication, principal);
+            return buildAuthenticationResponse(authentication, principal, response);
 
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -81,13 +91,16 @@ public class AuthenticationApi {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.email, request.password));
     }
 
-    private ResponseEntity<UserView> buildAuthenticationResponse(Authentication authentication, User principal) {
+    private ResponseEntity<UserView> buildAuthenticationResponse(Authentication authentication, User principal, HttpServletResponse response) {
+
         String scope = extractScope(authentication);
         JwtClaimsSet claims = buildClaims(principal, scope);
         String token = generateToken(claims);
 
+        Cookie jwtCookie = createJwtCookie(token, COOKIE_MAX_AGE);
+        response.addCookie(jwtCookie);
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, token)
                 .body(userMapper.toUserView(principal));
 
     }
@@ -117,6 +130,21 @@ public class AuthenticationApi {
 
     private String generateToken(JwtClaimsSet claims) {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    private Cookie createJwtCookie(String token, int maxAge){
+        Cookie cookie = new Cookie(JWT_COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(cookieSecure);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+
+        if (!cookieDomain.equals("localhost")) {
+            cookie.setDomain(cookieDomain);
+        }
+        cookie.setAttribute("SameSite", "Strict");
+
+        return cookie;
     }
 
     @PostMapping("signup")

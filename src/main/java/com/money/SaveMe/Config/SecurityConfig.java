@@ -1,4 +1,4 @@
-package com.money.SaveMe;
+package com.money.SaveMe.Config;
 
 
 import com.money.SaveMe.Service.UserService;
@@ -55,9 +55,11 @@ public class SecurityConfig {
     private RSAPrivateKey rsaPrivateKey;
 
     private final UserService userService;
+    private final CookieBearerTokenResolver cookieBearerTokenResolver;
 
-    public SecurityConfig(UserService userService) {
+    public SecurityConfig(UserService userService, CookieBearerTokenResolver cookieBearerTokenResolver) {
         this.userService = userService;
+        this.cookieBearerTokenResolver = cookieBearerTokenResolver;
     }
 
     @Bean
@@ -92,7 +94,9 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
 
                 )
-                .httpBasic(Customizer.withDefaults()).oauth2ResourceServer((oauth) -> oauth.jwt(Customizer.withDefaults()))
+                .httpBasic(Customizer.withDefaults())
+                .oauth2ResourceServer((oauth) -> oauth.bearerTokenResolver(cookieBearerTokenResolver)
+                        .jwt(Customizer.withDefaults()))
                 .authenticationProvider(authenticationProvider());
         return http.build();
     }

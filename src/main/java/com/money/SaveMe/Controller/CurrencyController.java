@@ -1,9 +1,14 @@
 package com.money.SaveMe.Controller;
 
+import com.money.SaveMe.DTO.Currency.SaveCurrencyDto;
+import com.money.SaveMe.DTO.Currency.CurrencyDtoOut;
 import com.money.SaveMe.Model.Currency;
 import com.money.SaveMe.Service.CurrencyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("currency")
@@ -15,30 +20,53 @@ public class CurrencyController {
         this.currencyService = currencyService;
     }
 
-    @GetMapping("/{userUUID}/all")
-    public ResponseEntity<Iterable<Currency>> getAllCurrencies(@PathVariable String userUUID) {
-        Iterable<Currency> currencies = currencyService.getAllCurrenciesFromUser(userUUID);
-        return ResponseEntity.ok(currencies);
+    @GetMapping("/all")
+    public ResponseEntity<List<CurrencyDtoOut>> getAllCurrencies() {
+        Iterable<Currency> currencies = currencyService.getAllCurrenciesFromUser();
+
+        List<CurrencyDtoOut> currencyDtos = StreamSupport.stream(currencies.spliterator(),true).map(
+                currency -> new CurrencyDtoOut(
+                        currency.getId(),
+                        currency.getName(),
+                        currency.getSymbol()
+                )
+        ).toList();
+
+        return ResponseEntity.ok(currencyDtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Currency> getCurrencyById(@PathVariable Long id,@RequestParam String userUUID) {
-        Currency currency = currencyService.getCurrencyById(id, userUUID);
+    public ResponseEntity<CurrencyDtoOut> getCurrencyById(@PathVariable Long id) {
+        Currency currency = currencyService.getCurrencyById(id);
+
         if (currency == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(currency);
+
+        CurrencyDtoOut currencyDtoOut = new CurrencyDtoOut(
+                currency.getId(),
+                currency.getName(),
+                currency.getSymbol()
+        );
+
+        return ResponseEntity.ok(currencyDtoOut);
     }
 
     @PostMapping
-    public ResponseEntity<Currency> saveCurrency(@RequestBody Currency currency) {
+    public ResponseEntity<CurrencyDtoOut> saveCurrency(@RequestBody SaveCurrencyDto currency) {
         Currency savedCurrency = currencyService.saveCurrency(currency);
-        return ResponseEntity.status(201).body(savedCurrency);
+        CurrencyDtoOut currencyDtoOut = new CurrencyDtoOut(
+                savedCurrency.getId(),
+                savedCurrency.getName(),
+                savedCurrency.getSymbol()
+        );
+
+        return ResponseEntity.status(201).body(currencyDtoOut);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCurrency(@PathVariable Long id, @RequestParam String userUUID) {
-        currencyService.deleteCurrency(id, userUUID);
+    public ResponseEntity<Void> deleteCurrency(@PathVariable Long id) {
+        currencyService.deleteCurrency(id);
         return ResponseEntity.status(202).build();
     }
 
