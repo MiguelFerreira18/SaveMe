@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-
-const name = ref(localStorage.getItem('username') || 'John Doe')
+import VerticalNavBar from '@/components/sidebar/VerticalNavBar.vue'
+import { sidebarwidth } from '@/components/sidebar/state'
 </script>
 
 <template>
-  <div>Congrats {{ name }}</div>
+  <VerticalNavBar />
+
+  <main class="pt-5 px-2" :style="{ 'margin-left': sidebarwidth }">
+    <RouterView />
+  </main>
 </template>
 
 <style lang="css" scoped></style>

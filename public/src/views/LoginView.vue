@@ -3,23 +3,9 @@ import { ref } from 'vue'
 import { Post } from '@/lib/requests'
 import { IsJWTExpired, SaveJwtFieldsToLocalStorage, ParseJwt } from '@/lib/jwtUtils'
 import router from '@/router'
+import { useToast } from '@/components/Toast/useToast'
 
-const toasts = ref([])
-const showToast = (message, type = 'info') => {
-  const id = Date.now()
-  toasts.value.push({ id, message, type, show: true })
-
-  setTimeout(() => {
-    const toastIndex = toasts.value.findIndex((t) => t.id === id)
-    if (toastIndex !== -1) {
-      toasts.value[toastIndex].show = false
-    }
-
-    setTimeout(() => {
-      toasts.value = toasts.value.filter((toast) => toast.id !== id)
-    }, 300)
-  }, 3000)
-}
+const {showToast} = useToast()
 
 const isLogin = ref(true)
 
@@ -79,7 +65,7 @@ async function handleRegister() {
   }
 
   try {
-    const response = await post('/auth/public/signup', {
+    const response = await Post('/auth/public/signup', {
       name: registerName.value,
       email: registerEmail.value,
       password: registerPassword.value,
@@ -103,22 +89,6 @@ async function handleRegister() {
 </script>
 
 <template>
-  <div class="fixed top-4 right-4 space-y-2 z-50">
-    <div
-      v-for="toast in toasts"
-      :key="toast.id"
-      class="px-4 py-2 rounded shadow-lg text-white"
-      :class="{
-        'bg-green-500': toast.type === 'success',
-        'bg-red-500': toast.type === 'error',
-        'bg-blue-500': toast.type === 'info',
-        'animate-fade-in': toast.show,
-        'animate-fade-out': !toast.show,
-      }"
-    >
-      {{ toast.message }}
-    </div>
-  </div>
   <div class="h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white shadow-md rounded-lg p-6 w-80">
       <div v-if="isLogin">

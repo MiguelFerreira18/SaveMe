@@ -1,5 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import Toast from '@/components/Toast/Toast.vue'
 </script>
 
 <template>

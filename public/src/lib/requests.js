@@ -1,98 +1,121 @@
-import { url } from './global/global'
+import { url } from './config'
 const dirtyToken = localStorage.getItem('token')
 const token = !dirtyToken || dirtyToken === 'undefined' ? '' : dirtyToken.trim()
 const headers = {
-  'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
 }
 
 async function Get(path, needsAuth = false) {
-  if (needsAuth) {
-    headers.Authorization = `Bearer ${token}`
-  }
+        try {
+                if (needsAuth) {
+                        headers.Authorization = `Bearer ${token}`
+                }
 
-  const options = {
-    method: 'GET',
-    headers,
-    mode: 'cors',
-    credentials: 'include',
-  }
-  const response = await fetch(url + path, options)
-  return response
+                const options = {
+                        method: 'GET',
+                        headers,
+                        mode: 'cors',
+                        credentials: 'include',
+                }
+                const response = await fetch(url + path, options)
+                return { ok: true, data: response }
+        } catch (error) {
+                return { ok: false, error }
+
+        }
 }
 
 async function Post(path, data = {}, needsAuth = false) {
-  if (needsAuth) {
-    headers.Authorization = `Bearer ${token}`
-  }
+        try {
+                if (needsAuth) {
+                        headers.Authorization = `Bearer ${token}`
+                }
 
-  const options = {
-    method: 'POST',
-    headers,
-    mode: 'cors',
-    credentials: 'include',
-  }
+                const options = {
+                        method: 'POST',
+                        headers,
+                        mode: 'cors',
+                        credentials: 'include',
+                }
 
-  if (data) {
-    options.body = JSON.stringify(data)
-  }
+                if (data) {
+                        options.body = JSON.stringify(data)
+                }
 
-  const response = await fetch(url + path, options)
-  return response
+                const response = await fetch(url + path, options)
+                return { ok: true, data: response }
+        } catch (error) {
+                return { ok: false, error }
+        }
 }
 
 async function Put(path, data = {}, needsAuth = false) {
-  if (needsAuth) {
-    headers.Authorization = `Bearer ${token}`
-  }
+        try {
 
-  const options = {
-    method: 'PUT',
-    headers,
-    mode: 'cors',
-    credentials: 'include',
-  }
+                if (needsAuth) {
+                        headers.Authorization = `Bearer ${token}`
+                }
 
-  if (data) {
-    options.body = JSON.stringify(data)
-  }
+                const options = {
+                        method: 'PUT',
+                        headers,
+                        mode: 'cors',
+                        credentials: 'include',
+                }
 
-  const response = await fetch(url + path, options)
-  return response
+                if (data) {
+                        options.body = JSON.stringify(data)
+                }
+
+                const response = await fetch(url + path, options)
+                return { ok: true, data: response }
+        } catch (error) {
+                return { ok: false, error }
+        }
 }
 
 async function Patch(path, data = {}, needsAuth = false) {
-  if (needsAuth) {
-    headers.Authorization = `Bearer ${token}`
-  }
 
-  const options = {
-    method: 'PATCH',
-    headers,
-    mode: 'cors',
-    credentials: 'include',
-  }
+        try {
+                if (needsAuth) {
+                        headers.Authorization = `Bearer ${token}`
+                }
 
-  if (data) {
-    options.body = JSON.stringify(data)
-  }
+                const options = {
+                        method: 'PATCH',
+                        headers,
+                        mode: 'cors',
+                        credentials: 'include',
+                }
 
-  const response = await fetch(url + path, options)
-  return response
+                if (data) {
+                        options.body = JSON.stringify(data)
+                }
+
+                const response = await fetch(url + path, options)
+                return { ok: true, data: response }
+        } catch (error) {
+                return { ok: false, error }
+        }
 }
 
 async function Del(path, needsAuth = false) {
-  if (needsAuth) {
-    headers.Authorization = `Bearer ${token}`
-  }
+        try {
+                if (needsAuth) {
+                        headers.Authorization = `Bearer ${token}`
+                }
 
-  const options = {
-    method: 'DELETE',
-    headers,
-    mode: 'cors',
-    credentials: 'include',
-  }
-  const response = await fetch(url + path, options)
-  return response
+                const options = {
+                        method: 'DELETE',
+                        headers,
+                        mode: 'cors',
+                        credentials: 'include',
+                }
+                const response = await fetch(url + path, options)
+                return { ok: true, data: response }
+        } catch (error) {
+                return { ok: false, error }
+        }
 }
 
 export { Get, Post, Put, Patch, Del }
