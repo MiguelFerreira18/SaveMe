@@ -30,6 +30,7 @@ public class IncomeController {
 
         Iterable<IncomeOutputDto> incomeOutputDtos = StreamSupport.stream(incomes.spliterator(), true).map(
                 income -> new IncomeOutputDto(
+                        income.getId(),
                         income.getCurrency().getName(),
                         income.getDescription(),
                         income.getAmount(),
@@ -49,6 +50,7 @@ public class IncomeController {
         }
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
+                income.getId(),
                 income.getCurrency().getName(),
                 income.getDescription(),
                 income.getAmount(),
@@ -67,6 +69,7 @@ public class IncomeController {
         }
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
+                savedIncome.getId(),
                 savedIncome.getCurrency().getName(),
                 savedIncome.getDescription(),
                 savedIncome.getAmount(),
@@ -85,6 +88,7 @@ public class IncomeController {
         }
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
+                updatedIncome.getId(),
                 updatedIncome.getCurrency().getName(),
                 updatedIncome.getDescription(),
                 updatedIncome.getAmount(),
