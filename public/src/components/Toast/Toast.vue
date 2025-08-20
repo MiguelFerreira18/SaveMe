@@ -1,10 +1,7 @@
 <script setup>
-import { useToast } from './useToast';
+import { useToast } from './useToast'
 const { toasts } = useToast()
-
 </script>
-
-
 
 <template>
   <div class="fixed top-4 right-4 space-y-2 z-50">
