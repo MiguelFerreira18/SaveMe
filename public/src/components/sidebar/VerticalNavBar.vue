@@ -1,4 +1,4 @@
-<script setup >
+<script setup>
 import { collapsed, sidebarwidth, toggleSidebar } from './state'
 import SidebarLink from './SidebarLink.vue'
 </script>
@@ -21,8 +21,8 @@ import SidebarLink from './SidebarLink.vue'
       </span>
     </h1>
     <SidebarLink to="/dashboard" icon="fas fa-chart-bar">Dashboard</SidebarLink>
+    <SidebarLink to="/income" icon="fas fa-coins">Income</SidebarLink>
     <SidebarLink to="/currency" icon="fas fa-coins">Currency</SidebarLink>
-    <SidebarLink to="/expenses" icon="fas fa-coins">Despesas</SidebarLink>
     <SidebarLink to="/" icon="fas fa-check">Login</SidebarLink>
   </nav>
 </template>

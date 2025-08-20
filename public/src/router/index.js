@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+import IncomeView from '@/views/IncomeView.vue'
 import CurrencyView from '@/views/CurrencyView.vue'
 import { IsJWTExpired } from '@/lib/jwtUtils'
 import { isProduction } from '@/lib/config'
@@ -24,6 +25,12 @@ const router = createRouter({
           path: '/currency',
           name: 'currency',
           component: CurrencyView,
+          meta: { requiresAuth: isProduction ? true : false },
+        },
+        {
+          path: '/income',
+          name: 'income',
+          component: IncomeView,
           meta: { requiresAuth: isProduction ? true : false },
         },
       ],
