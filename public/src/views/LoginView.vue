@@ -34,7 +34,6 @@ async function handleLogin() {
   }
 
   const user = await response.json()
-  console.log(response)
   const authHeader = response.headers.get('authorization')
 
   if (authHeader && !IsJWTExpired(authHeader)) {
@@ -64,7 +63,6 @@ async function handleRegister() {
     return
   }
 
-  try {
     const response = await Post('/auth/public/signup', {
       name: registerName.value,
       email: registerEmail.value,
@@ -73,18 +71,17 @@ async function handleRegister() {
     })
 
     if (!response.ok) {
-      throw new Error('Failed to register')
+      showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+    }else if(!response.data.ok){
+      showToast('Server rejected request','error')
+    }else{
+      showToast('Registration successful! Please login.', 'success')
+      isLogin.value = true
+      registerName.value = ''
+      registerEmail.value = ''
+      registerPassword.value = ''
+      registerRepeatPassword.value = ''
     }
-
-    showToast('Registration successful! Please login.', 'success')
-    isLogin.value = true
-    registerName.value = ''
-    registerEmail.value = ''
-    registerPassword.value = ''
-    registerRepeatPassword.value = ''
-  } catch (error) {
-    showToast(error.message, 'error')
-  }
 }
 </script>
 
