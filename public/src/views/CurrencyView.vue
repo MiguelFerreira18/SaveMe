@@ -1,7 +1,7 @@
 <script setup lang="js">
 import TableGen from '@/components/table/TableGen.vue'
 import Modal from '@/components/modal/Modal.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Post } from '@/lib/requests'
 import { useToast } from '@/components/Toast/useToast'
 import Toast from '@/components/Toast/Toast.vue'
@@ -13,50 +13,60 @@ const tempData = [
   { id: 2, name: 'euro', symbol: '€' },
   { id: 3, name: 'pound', symbol: '£' },
   { id: 4, name: 'yen', symbol: '¥' },
-  { id: 5, name: 'rupee', symbol: '₹' },
-  { id: 6, name: 'won', symbol: '₩' },
-  { id: 7, name: 'franc', symbol: '₣' },
-  { id: 8, name: 'rupee', symbol: '₹' },
-  { id: 9, name: 'currency', symbol: '¤' },
+  { id: 5, name: 'won', symbol: '₩' },
+  { id: 6, name: 'franc', symbol: '₣' },
+  { id: 7, name: 'rupee', symbol: '₹' },
+  { id: 8, name: 'currency', symbol: '¤' },
 ]
 
 const currentPage = ref(1)
 
-
 const searchQuery = ref('')
-function resetSearch(){
+const filteredData = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return [...tempData]
+  }
+
+  const searchLower = searchQuery.value.toLowerCase()
+
+  return tempData.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchLower) ||
+      item.symbol.toLowerCase().includes(searchLower),
+  )
+})
+
+function resetSearch() {
   searchQuery.value = ''
 }
-
 
 const openModal = ref(false)
 
 const currencyName = ref('')
 const currencySymbol = ref('')
-async function handleCurrencyCreation(){
+async function handleCurrencyCreation() {
   const currency = {
     name: currencyName.value,
-    symbol: currencySymbol.value
+    symbol: currencySymbol.value,
   }
 
   const response = await Post('/api/currency', currency)
 
   if (!response.ok) {
-    showToast(`failed: ${response.error.message || 'Server unreachable'}`,'error')
-  }else if (!response.data.ok){
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+  } else if (!response.data.ok) {
     showToast('Server rejected the request', 'error')
-  }else{
+  } else {
     showToast('Currency was added successfully', 'success')
-  openModal.value = false
-  currencyName.value = ''
-  currencySymbol.value = ''
+    openModal.value = false
+    currencyName.value = ''
+    currencySymbol.value = ''
   }
 }
-
 </script>
 
 <template>
-  <Toast/>
+  <Toast />
   <h1>Currency View</h1>
   <div class="flex flex-col md:flex-row px-5 py-2 gap-2 md:items-baseline">
     <div class="flex flex-2 flex-col sm:flex-row gap-2">
@@ -78,21 +88,19 @@ async function handleCurrencyCreation(){
           class="w-full max-w-md p-2 pl-8 border border-gray-300 rounded"
           type="text"
           placeholder="Search..."
-          @input="filterTable"
         />
       </span>
-    <button
+      <button
         v-if="searchQuery"
         @click="resetSearch"
-        class="bg-gray-200 text-gray-700 px-3 py-2 rounded sm:ml-2 hover:bg-gray-300
-        active:bg-gray-400 transition"
+        class="bg-gray-200 text-gray-700 px-3 py-2 rounded sm:ml-2 hover:bg-gray-300 active:bg-gray-400 transition"
       >
         Reset
-    </button>
+      </button>
     </div>
 
-    <button class="bg-blue-500 text-white px-4 py-2 text-lg rounded md:ml-auto w-full sm:w-auto
-      hover:bg-blue-600 active:bg-blue-700 transition"
+    <button
+      class="bg-blue-500 text-white px-4 py-2 text-lg rounded md:ml-auto w-full sm:w-auto hover:bg-blue-600 active:bg-blue-700 transition"
       @click="openModal = true"
     >
       Create
@@ -100,7 +108,7 @@ async function handleCurrencyCreation(){
   </div>
 
   <TableGen
-    :data="tempData"
+    :data="filteredData"
     :columns="['name', 'symbol']"
     :isCurrency="true"
     :pageSize="15"
@@ -110,25 +118,23 @@ async function handleCurrencyCreation(){
     <div>
       <h2 class="text-xl font-bold mb-4">Create a Currency</h2>
       <input
-          v-model="currencyName"
-          type="text"
-          placeholder="Currency Name"
-          class="w-full mb-3 p-2 border border-gray-300 rounded"
-        />
-        <input
-          v-model="currencySymbol"
-          type="text"
-          placeholder="Currency Symbol"
-          class="w-full mb-3 p-2 border border-gray-300 rounded"
-        />
-        <button
-          @click="handleCurrencyCreation"
-          class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600
-        active:bg-green-700 transition"
-        >
-          Confirm
-        </button>
-
+        v-model="currencyName"
+        type="text"
+        placeholder="Currency Name"
+        class="w-full mb-3 p-2 border border-gray-300 rounded"
+      />
+      <input
+        v-model="currencySymbol"
+        type="text"
+        placeholder="Currency Symbol"
+        class="w-full mb-3 p-2 border border-gray-300 rounded"
+      />
+      <button
+        @click="handleCurrencyCreation"
+        class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 active:bg-green-700 transition"
+      >
+        Confirm
+      </button>
     </div>
   </Modal>
 </template>
