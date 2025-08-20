@@ -5,7 +5,7 @@ import { IsJWTExpired, SaveJwtFieldsToLocalStorage, ParseJwt } from '@/lib/jwtUt
 import router from '@/router'
 import { useToast } from '@/components/Toast/useToast'
 
-const {showToast} = useToast()
+const { showToast } = useToast()
 
 const isLogin = ref(true)
 
