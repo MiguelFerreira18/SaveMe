@@ -17,6 +17,7 @@ const tempData = [
     description: 'anyDescription',
     amount: 120,
     userId: '92a167e6-f909-4ee5-9443-1809e93fa092',
+    date: '2025-08-21'
   },
   {
     id: 2,
@@ -24,37 +25,17 @@ const tempData = [
     description: 'anyDescription2',
     amount: 130,
     userId: '92a167e6-f909-4ee5-9443-1809e93fa092',
+    date: '2025-08-21'
   },
 ]
 
 const currentPage = ref(1)
 
 const searchQuery = ref('')
-const filteredData = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return [...tempData]
-  }
-
-  const searchLower = searchQuery.value.toLowerCase()
-
-  return tempData.filter(
-    (item) =>
-      item.description.toLowerCase().includes(searchLower) ||
-      item.symbol.toLowerCase().includes(searchLower) ||
-      item.amount.toLowerCase().includes(searchLower),
-  )
-})
-
-function resetSearch() {
-  searchQuery.value = ''
-}
-
-const openModal = ref(false)
-
 const option = ref(1) // Should default to €
 const currency = [
-  { id: 1, symbol: '$' },
-  { id: 2, symbol: '€' },
+  { id: 1, symbol: '€' },
+  { id: 2, symbol: '$' },
 ]
 const dateOption = ref(getToday())
 function getToday() {
@@ -62,13 +43,62 @@ function getToday() {
   const currentDate = date.toISOString().slice(0, 10)
   return currentDate
 }
+const filteredData = computed(() => {
+  const searchLower = searchQuery.value.toLowerCase()
+  const currencySymbol = currency.find( (currency) => currency.id == option.value).symbol
+  const compareDate = (a,b) => {
+    const date = new Date(a)
+    const compDate = new Date(b)
 
-const createIncome = reactive({
+    return date.getFullYear() == compDate.getFullYear() && date.getMonth() == compDate.getMonth()
+  }
+
+
+  return tempData.filter(
+    (item) =>
+      (item.description.toLowerCase().includes(searchLower) ||
+      item.symbol.toLowerCase().includes(searchLower) ||
+      item.amount.toString().toLowerCase().includes(searchLower)) &&
+    item.symbol.toLowerCase().includes(currencySymbol) &&
+    compareDate(item.date.toLowerCase(),dateOption.value.toLowerCase())
+  )
+})
+
+function resetSearch() {
+  searchQuery.value = ''
+  dateOption.value = getToday()
+  option.value = 1
+}
+
+const openModal = ref(false)
+
+
+
+const income = reactive({
   symbol: 0,
-  date: '',
+  date: getToday(),
   amount: 0.0,
   description: '',
 })
+
+async function handleIncomeCreation(){
+  const response = await Post("/api/income",income)
+  if (!response.ok) {
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+  }else if(!response.data.ok){
+    showToast("Server rejected request", 'error')
+  }else{
+    showToast('Income was added successfully','success')
+    income.symbol = ''
+    income.amount = 0.0
+    income.description = ''
+    income.date = getToday()
+
+  }
+
+}
+
+
 </script>
 
 <template>
@@ -98,10 +128,10 @@ const createIncome = reactive({
       </span>
       <div class="flex sm:contents gap-1 max-w-sm">
         <div class="w-full sm:w-auto md:w-35 flex items-end">
-          <MonthlyCalendar v-model="dateOption" :name="calendar" :getToday="getToday" />
+          <MonthlyCalendar v-model="dateOption" name="calendar" :getToday="getToday" />
         </div>
         <div class="w-full sm:w-auto md:w-15 flex items-end">
-          <CurrencyDropdown v-model="option" :label="currencies" :data="currency" />
+          <CurrencyDropdown v-model="option" label="currencies" :data="currency" />
         </div>
       </div>
 
@@ -132,27 +162,27 @@ const createIncome = reactive({
     <div>
       <h2 class="text-xl font-bold mb-4">Insert Income Source</h2>
       <input
-        v-model="createIncome.description"
+        v-model="income.description"
         type="text"
         placeholder="Description"
         class="w-full mb-3 p-2 border border-gray-300 rounded"
       />
       <input
-        v-model="createIncome.amount"
+        v-model="income.amount"
         type="text"
         placeholder="Amount"
         class="w-full mb-3 p-2 border border-gray-300 rounded"
       />
       <div class="flex mb-3 gap-1 w-full">
         <div class="w-full flex items-end">
-          <MonthlyCalendar v-model="dateOption" :name="calendar" :getToday="getToday" />
+          <MonthlyCalendar v-model="income.date" name="calendar" :getToday="getToday" />
         </div>
         <div class="w-20 flex items-end">
-          <CurrencyDropdown v-model="option" :label="currencies" :data="currency" />
+          <CurrencyDropdown v-model="income.amount" label="currencies" :data="currency" />
         </div>
       </div>
       <button
-        @click="handleCurrencyCreation"
+        @click="handleIncomeCreation"
         class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 active:bg-green-700 transition"
       >
         Confirm

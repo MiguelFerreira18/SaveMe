@@ -13,7 +13,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:valueModel'])
+const emit = defineEmits(['update:modelValue'])
 
 function incrementAYear(dateStr) {
   const date = new Date(dateStr)
@@ -26,7 +26,6 @@ function updateDate(value) {
   emit('update:modelValue', value.target.value)
 }
 
-console.log(props.getToday())
 </script>
 
 <template>
