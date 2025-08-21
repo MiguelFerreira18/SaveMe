@@ -2,15 +2,52 @@
 import TableGen from '@/components/table/TableGen.vue'
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue'
 import Modal from '@/components/modal/Modal.vue'
-import { computed, reactive, ref } from 'vue'
-import { Post } from '@/lib/requests'
+import { onMounted,computed, reactive, ref } from 'vue'
+import { Post,Get } from '@/lib/requests'
 import { useToast } from '@/components/Toast/useToast'
 import Toast from '@/components/Toast/Toast.vue'
 import MonthlyCalendar from '@/components/calendar/MonthlyCalendar.vue'
+import LoadingSpinner from '@/components/spinner/LoadingSpinner.vue'
 
 const { showToast } = useToast()
 
-const tempData = [
+//TODO: CREATE A ERROR COMPONENT IN CASE OF ERRORS
+
+const isLoading = ref({
+  currencies: true,
+  income: true
+})
+onMounted(() => {
+  getCurrencies()
+  getIncomes()
+})
+
+async function getCurrencies(){
+  const response = await Get("/api/currency",true)
+
+  if (!response.ok) {
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+  }else if(!response.data.ok){
+    showToast('Failed to fetch currencies. Server refused connection','error')
+  }else{
+    isLoading.value.currencies = false
+    currency.value = response.data
+  }
+}
+async function getIncomes(){
+  const response = await Get("/api/income",true)
+
+  if (!response.ok) {
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+  }else if(!response.data.ok){
+    showToast('Failed to fetch income. Server refused connection','error')
+  }else{
+    isLoading.value.income = false
+    incomes.value = response.data
+  }
+}
+
+const incomes = [
   {
     id: 1,
     symbol: '€',
@@ -33,10 +70,10 @@ const currentPage = ref(1)
 
 const searchQuery = ref('')
 const option = ref(1) // Should default to €
-const currency = [
+const currency = ref([
   { id: 1, symbol: '€' },
   { id: 2, symbol: '$' },
-]
+])
 const dateOption = ref(getToday())
 function getToday() {
   const date = new Date()
@@ -45,7 +82,7 @@ function getToday() {
 }
 const filteredData = computed(() => {
   const searchLower = searchQuery.value.toLowerCase()
-  const currencySymbol = currency.find( (currency) => currency.id == option.value).symbol
+  const currencySymbol = currency.value.find( (currency) => currency.id == option.value).symbol
   const compareDate = (a,b) => {
     const date = new Date(a)
     const compDate = new Date(b)
@@ -54,7 +91,7 @@ const filteredData = computed(() => {
   }
 
 
-  return tempData.filter(
+  return incomes.filter(
     (item) =>
       (item.description.toLowerCase().includes(searchLower) ||
       item.symbol.toLowerCase().includes(searchLower) ||
@@ -71,8 +108,6 @@ function resetSearch() {
 }
 
 const openModal = ref(false)
-
-
 
 const income = reactive({
   symbol: 0,
@@ -93,9 +128,7 @@ async function handleIncomeCreation(){
     income.amount = 0.0
     income.description = ''
     income.date = getToday()
-
   }
-
 }
 
 
@@ -103,6 +136,8 @@ async function handleIncomeCreation(){
 
 <template>
   <Toast />
+    <LoadingSpinner v-if="isLoading.income && isLoading.currencies" :isLoading="isLoading.income && isLoading.currencies" />
+  <div v-else>
   <h1>Income View</h1>
   <div class="flex flex-col md:flex-row pr-5 py-2 gap-2 md:items-baseline">
     <div class="flex flex-2 flex-col sm:flex-row gap-2">
@@ -189,6 +224,7 @@ async function handleIncomeCreation(){
       </button>
     </div>
   </Modal>
+</div>
 </template>
 
 <style scoped></style>
