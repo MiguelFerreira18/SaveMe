@@ -8,15 +8,20 @@ import { useToast } from '@/components/Toast/useToast'
 import Toast from '@/components/Toast/Toast.vue'
 import MonthlyCalendar from '@/components/calendar/MonthlyCalendar.vue'
 import LoadingSpinner from '@/components/spinner/LoadingSpinner.vue'
+import NoValue from '@/components/error/NoValue.vue'
+import ErrorServer from '@/components/error/ErrorServer.vue'
 
 const { showToast } = useToast()
-
-//TODO: CREATE A ERROR COMPONENT IN CASE OF ERRORS
 
 const isLoading = ref({
   currencies: true,
   income: true
 })
+const hasErrors = ref({
+  currencies: false,
+  income: false
+})
+
 onMounted(() => {
   getCurrencies()
   getIncomes()
@@ -27,8 +32,12 @@ async function getCurrencies(){
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+    hasErrors.value.currencies = true
+    isLoading.value.currencies = false
   }else if(!response.data.ok){
     showToast('Failed to fetch currencies. Server refused connection','error')
+    hasErrors.value.currencies = true
+    isLoading.value.currencies = false
   }else{
     isLoading.value.currencies = false
     currency.value = response.data
@@ -39,15 +48,19 @@ async function getIncomes(){
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+    hasErrors.value.income = true
+    isLoading.value.income = false
   }else if(!response.data.ok){
     showToast('Failed to fetch income. Server refused connection','error')
+    hasErrors.value.income = true
+    isLoading.value.income = false
   }else{
     isLoading.value.income = false
     incomes.value = response.data
   }
 }
 
-const incomes = [
+const incomes = ref([
   {
     id: 1,
     symbol: '€',
@@ -64,7 +77,7 @@ const incomes = [
     userId: '92a167e6-f909-4ee5-9443-1809e93fa092',
     date: '2025-08-21'
   },
-]
+])
 
 const currentPage = ref(1)
 
@@ -91,7 +104,7 @@ const filteredData = computed(() => {
   }
 
 
-  return incomes.filter(
+  return incomes.value.filter(
     (item) =>
       (item.description.toLowerCase().includes(searchLower) ||
       item.symbol.toLowerCase().includes(searchLower) ||
@@ -130,16 +143,23 @@ async function handleIncomeCreation(){
     income.date = getToday()
   }
 }
-
-
 </script>
 
 <template>
   <Toast />
-    <LoadingSpinner v-if="isLoading.income && isLoading.currencies" :isLoading="isLoading.income && isLoading.currencies" />
+    <LoadingSpinner v-if="(isLoading.income && isLoading.currencies)" :isLoading="isLoading.income && isLoading.currencies" />
+
+  <ErrorServer v-else-if="hasErrors.currencies || hasErrors.income" errorMessage="An Error has occured on the server" :retry="() =>
+    {
+    isLoading.currencies = true
+    isLoading.income = true
+    getCurrencies()
+    getIncomes()
+  }"/>
+
   <div v-else>
   <h1>Income View</h1>
-  <div class="flex flex-col md:flex-row pr-5 py-2 gap-2 md:items-baseline">
+  <div class="flex flex-col md:flex-row pl-4 pr-5 py-2 gap-2 md:items-baseline">
     <div class="flex flex-2 flex-col sm:flex-row gap-2">
       <span class="relative flex items-center">
         <span class="absolute left-2 text-gray-400">
@@ -186,7 +206,11 @@ async function handleIncomeCreation(){
       Create
     </button>
   </div>
+<NoValue v-if="filteredData.length === 0" size="text-3xl" text="You don't have any income added.
+      Make sure to add your sources of income"/>
   <TableGen
+      v-else
+      :total="filteredData.reduce((acc,i)=> acc + i.amount,0)"
     :data="filteredData"
     :columns="['description', 'amount', 'symbol']"
     :isCurrency="false"

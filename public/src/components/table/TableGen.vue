@@ -16,7 +16,7 @@ const props = defineProps({
     default: false,
   },
   total: {
-    type: Array,
+    type: Number,
     required: false,
     default: null,
   },
@@ -89,7 +89,7 @@ const formatValue = (value) => {
 </script>
 
 <template>
-  <div class="table-container">
+  <div class="table-container p-4">
     <div class="overflow-x-auto">
       <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
         <thead class="bg-gray-50">
@@ -123,10 +123,10 @@ const formatValue = (value) => {
 
     <div v-if="total" class="mt-4 p-4 bg-gray-100 rounded-lg">
       <div class="flex justify-between items-center font-semibold">
-        <span>Total:</span>
+        <span class="text-xl pr-4">Total:</span>
         <div class="flex gap-8">
-          <span v-for="(value, key) in total" :key="key">
-            {{ key }}: {{ formatValue(value) }}
+          <span class="text-xl pr-4">
+            {{total}}
           </span>
         </div>
       </div>

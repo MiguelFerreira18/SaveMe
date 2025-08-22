@@ -1,35 +1,66 @@
 <script setup lang="js">
 import TableGen from '@/components/table/TableGen.vue'
 import Modal from '@/components/modal/Modal.vue'
-import { computed, ref } from 'vue'
-import { Post } from '@/lib/requests'
+import { computed, onMounted, ref } from 'vue'
+import { Post,Get } from '@/lib/requests'
 import { useToast } from '@/components/Toast/useToast'
 import Toast from '@/components/Toast/Toast.vue'
+import LoadingSpinner from '@/components/spinner/LoadingSpinner.vue'
+import ErrorServer from '@/components/error/ErrorServer.vue'
+import NoValue from '@/components/error/NoValue.vue'
 
 const { showToast } = useToast()
+const isLoading = ref({
+  currencies: true,
+})
+const hasErrors = ref({
+  currencies: false,
+})
 
-const tempData = [
-  { id: 1, name: 'dollar', symbol: '$' },
-  { id: 2, name: 'euro', symbol: '€' },
-  { id: 3, name: 'pound', symbol: '£' },
-  { id: 4, name: 'yen', symbol: '¥' },
-  { id: 5, name: 'won', symbol: '₩' },
-  { id: 6, name: 'franc', symbol: '₣' },
-  { id: 7, name: 'rupee', symbol: '₹' },
-  { id: 8, name: 'currency', symbol: '¤' },
-]
+onMounted(() =>{
+  getCurrencies()
+})
+
+async function getCurrencies(){
+  const response = await Get("/api/currency",true)
+
+  if (!response.ok) {
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+    hasErrors.value.currencies = true
+    isLoading.value.currencies = false
+  }else if(!response.data.ok){
+    showToast('Failed to fetch currencies. Server refused connection','error')
+    hasErrors.value.currencies = true
+    isLoading.value.currencies = false
+  }else{
+    isLoading.value.currencies = false
+    currency.value = response.data
+  }
+
+}
+
+const currency = ref([
+  // { id: 1, name: 'dollar', symbol: '$' },
+  // { id: 2, name: 'euro', symbol: '€' },
+  // { id: 3, name: 'pound', symbol: '£' },
+  // { id: 4, name: 'yen', symbol: '¥' },
+  // { id: 5, name: 'won', symbol: '₩' },
+  // { id: 6, name: 'franc', symbol: '₣' },
+  // { id: 7, name: 'rupee', symbol: '₹' },
+  // { id: 8, name: 'currency', symbol: '¤' },
+])
 
 const currentPage = ref(1)
 
 const searchQuery = ref('')
 const filteredData = computed(() => {
   if (!searchQuery.value.trim()) {
-    return [...tempData]
+    return  currency.value
   }
 
   const searchLower = searchQuery.value.toLowerCase()
 
-  return tempData.filter(
+  return currency.value.filter(
     (item) =>
       item.name.toLowerCase().includes(searchLower) ||
       item.symbol.toLowerCase().includes(searchLower),
@@ -67,6 +98,14 @@ async function handleCurrencyCreation() {
 
 <template>
   <Toast />
+  <LoadingSpinner v-if="isLoading.currencies" :isLoading="isLoading.currencies" />
+
+  <ErrorServer v-else-if="hasErrors.currencies" errorMessage="An Error has occured on the server" :retry="() =>
+    {
+    isLoading.currencies = true
+    getCurrencies()
+  }"/>
+  <div v-else>
   <h1>Currency View</h1>
   <div class="flex flex-col md:flex-row px-5 py-2 gap-2 md:items-baseline">
     <div class="flex flex-2 flex-col sm:flex-row gap-2">
@@ -106,8 +145,10 @@ async function handleCurrencyCreation() {
       Create
     </button>
   </div>
-
+  <NoValue v-if="filteredData.length === 0" size="text-3xl" text="You don't have any currencies added.
+      Make sure to add your currencies"/>
   <TableGen
+    v-else
     :data="filteredData"
     :columns="['name', 'symbol']"
     :isCurrency="true"
@@ -137,6 +178,7 @@ async function handleCurrencyCreation() {
       </button>
     </div>
   </Modal>
+  </div>
 </template>
 
 <style scoped></style>
