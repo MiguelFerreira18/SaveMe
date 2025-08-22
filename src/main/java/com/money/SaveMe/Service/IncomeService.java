@@ -10,6 +10,7 @@ import com.money.SaveMe.Repo.IncomeRepo;
 import com.money.SaveMe.Repo.UserRepo;
 import com.money.SaveMe.Utils.AuthenticationServiceUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class IncomeService {
@@ -27,9 +28,9 @@ public class IncomeService {
 
     //CRUD
 
-    public Iterable<Income> getAllIncomeByUserIdFromCurrency(Long currencyId) {
+    public Iterable<Income> getAllIncomeByUserId() {
         String userId = authenticationServiceUtil.getCurrentUserUuid();
-        return incomeRepo.findAllIncomeByUserIdFromCurrency(userId, currencyId);
+        return incomeRepo.findAllIncomeByUserId(userId);
     }
 
     public Income getIncomeById(Long id) {
@@ -46,7 +47,7 @@ public class IncomeService {
         Currency currency = currencyRepo.findCurrencyByIdAndUserId(income.currencyId(), userId)
                 .orElseThrow(() -> new IllegalArgumentException(STR."Currency not found with id: \{income.currencyId()} for user: \{userId}"));
 
-        Income newIncome = new Income(user, currency, income.amount(), income.description());
+        Income newIncome = new Income(user, currency, income.amount(), income.description(), income.date());
 
         return incomeRepo.save(newIncome);
     }

@@ -18,6 +18,9 @@ public interface CurrencyRepo extends CrudRepository<Currency,Long> {
     @Query("SELECT c FROM Currency c WHERE c.id = ?1 AND c.user.id = ?2")
     Optional<Currency> findCurrencyByIdAndUserId(Long id, String userUUID);
 
+    @Query("SELECT c FROM Currency c WHERE c.name = ?1 AND c.symbol = ?2 AND c.user.id = ?3")
+    Optional<Currency> findByNameAndSymbolAndUserId(String name, String symbol, String userId);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM Currency c WHERE c.id = ?1 AND c.user.id = ?2")

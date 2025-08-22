@@ -48,4 +48,9 @@ public class CurrencyService {
         return currencyRepo.existsById(id);
     }
 
+    public Currency findByNameAndSymbolAndUserId(String name, String symbol, String userId) {
+        return currencyRepo.findByNameAndSymbolAndUserId(name, symbol, userId)
+                .orElse(null);
+    }
+
 }

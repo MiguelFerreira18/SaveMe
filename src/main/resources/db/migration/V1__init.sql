@@ -26,12 +26,12 @@ CREATE TABLE IF NOT EXISTS user_authority
 
 CREATE TABLE IF NOT EXISTS currency
 (
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id       VARCHAR(255)   NOT NULL,
-    name          VARCHAR(50)    NOT NULL,
-    symbol        VARCHAR(10)    NOT NULL,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id    VARCHAR(255) NOT NULL,
+    name       VARCHAR(50)  NOT NULL,
+    symbol     VARCHAR(10)  NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS income
     currency_id BIGINT         NOT NULL,
     amount      DECIMAL(10, 2) NOT NULL,
     description VARCHAR(255),
+    date        DATE           NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS expense
     category_id BIGINT         NOT NULL,
     amount      DECIMAL(10, 2) NOT NULL,
     description VARCHAR(255),
+    date        DATE           NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
@@ -87,6 +89,7 @@ CREATE TABLE IF NOT EXISTS investment
     amount           DECIMAL(10, 2) NOT NULL,
     strategy_type_id BIGINT         NOT NULL,
     description      VARCHAR(255),
+    date             DATE           NOT NULL,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
@@ -101,6 +104,7 @@ CREATE TABLE IF NOT EXISTS wish
     currency_id BIGINT         NOT NULL,
     amount      DECIMAL(10, 2) NOT NULL,
     description VARCHAR(255),
+    date        DATE           NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,

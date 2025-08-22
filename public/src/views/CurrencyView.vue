@@ -17,12 +17,9 @@ const hasErrors = ref({
   currencies: false,
 })
 
-onMounted(() =>{
-  getCurrencies()
-})
 
 async function getCurrencies(){
-  const response = await Get("/api/currency",true)
+  const response = await Get("/api/currency/all",true)
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
@@ -34,7 +31,8 @@ async function getCurrencies(){
     isLoading.value.currencies = false
   }else{
     isLoading.value.currencies = false
-    currency.value = response.data
+    const data = await response.data.json()
+    currency.value = data
   }
 
 }
@@ -54,6 +52,7 @@ const currentPage = ref(1)
 
 const searchQuery = ref('')
 const filteredData = computed(() => {
+  if(!isLoading.value.currency){
   if (!searchQuery.value.trim()) {
     return  currency.value
   }
@@ -65,6 +64,7 @@ const filteredData = computed(() => {
       item.name.toLowerCase().includes(searchLower) ||
       item.symbol.toLowerCase().includes(searchLower),
   )
+  }
 })
 
 function resetSearch() {
@@ -94,6 +94,10 @@ async function handleCurrencyCreation() {
     currencySymbol.value = ''
   }
 }
+
+onMounted(() =>{
+  getCurrencies()
+})
 </script>
 
 <template>

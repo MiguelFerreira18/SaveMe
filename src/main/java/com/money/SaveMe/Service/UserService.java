@@ -44,6 +44,12 @@ public class UserService implements UserDetailsService {
         return userOptional;
     }
 
+    @Transactional
+    public User getUserByEmail(String email) {
+        Optional<User> userOpt = userRepo.findByEmail(email);
+        return userOpt.orElse(null);
+    }
+
 
     @Transactional
     @Override

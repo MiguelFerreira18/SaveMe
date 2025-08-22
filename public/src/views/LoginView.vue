@@ -33,8 +33,8 @@ async function handleLogin() {
     showToast('Login successful', 'success')
   }
 
-  const user = await response.json()
-  const authHeader = response.headers.get('authorization')
+  const user = await response.data.json()
+  const authHeader = response.data.headers.get('authorization')
 
   if (authHeader && !IsJWTExpired(authHeader)) {
     localStorage.setItem('userId', user.id)

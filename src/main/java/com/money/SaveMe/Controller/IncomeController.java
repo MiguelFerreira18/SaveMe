@@ -6,6 +6,7 @@ import com.money.SaveMe.DTO.Income.UpdateIncomeDto;
 import com.money.SaveMe.Model.Income;
 import com.money.SaveMe.Service.IncomeService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -22,22 +23,23 @@ public class IncomeController {
         this.incomeService = incomeService;
     }
 
-    @GetMapping("/all/{currencyId}")
-    public ResponseEntity<Iterable<IncomeOutputDto>> getAllIncomeByUserIdFromCurrency(@PathVariable Long currencyId) {
-        Iterable<Income> incomes = incomeService.getAllIncomeByUserIdFromCurrency(currencyId);
+    @GetMapping("/all")
+    @Transactional
+    public ResponseEntity<Iterable<IncomeOutputDto>> getAllIncomeByUserIdFromCurrency() {
+        Iterable<Income> incomes = incomeService.getAllIncomeByUserId();
 
         if (incomes == null || !incomes.iterator().hasNext()) {
             return ResponseEntity.notFound().build();
         }
 
-        Iterable<IncomeOutputDto> incomeOutputDtos = StreamSupport.stream(incomes.spliterator(), true).map(
+        Iterable<IncomeOutputDto> incomeOutputDtos = StreamSupport.stream(incomes.spliterator(), false).map(
                 income -> new IncomeOutputDto(
                         income.getId(),
-                        income.getCurrency().getName(),
+                        income.getCurrency().getSymbol(),
                         income.getDescription(),
                         income.getAmount(),
                         income.getUser().getId(),
-                        parserToLocalDateTime(income.getCreatedAt())
+                        income.getDate()
                 )
         ).toList();
 
@@ -54,11 +56,12 @@ public class IncomeController {
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
                 income.getId(),
-                income.getCurrency().getName(),
+                income.getCurrency().getSymbol(),
                 income.getDescription(),
                 income.getAmount(),
                 income.getUser().getId(),
-                parserToLocalDateTime(income.getCreatedAt())
+                income.getDate()
+
         );
 
         return ResponseEntity.ok(incomeOutputDto);
@@ -74,11 +77,11 @@ public class IncomeController {
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
                 savedIncome.getId(),
-                savedIncome.getCurrency().getName(),
+                savedIncome.getCurrency().getSymbol(),
                 savedIncome.getDescription(),
                 savedIncome.getAmount(),
                 savedIncome.getUser().getId(),
-                parserToLocalDateTime(savedIncome.getCreatedAt())
+                savedIncome.getDate()
         );
 
         return ResponseEntity.ok(incomeOutputDto);
@@ -94,11 +97,11 @@ public class IncomeController {
 
         IncomeOutputDto incomeOutputDto = new IncomeOutputDto(
                 updatedIncome.getId(),
-                updatedIncome.getCurrency().getName(),
+                updatedIncome.getCurrency().getSymbol(),
                 updatedIncome.getDescription(),
                 updatedIncome.getAmount(),
                 updatedIncome.getUser().getId(),
-                parserToLocalDateTime(updatedIncome.getCreatedAt())
+                updatedIncome.getDate()
         );
 
         return ResponseEntity.ok(incomeOutputDto);

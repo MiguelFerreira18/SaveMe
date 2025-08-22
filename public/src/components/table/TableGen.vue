@@ -126,7 +126,7 @@ const formatValue = (value) => {
         <span class="text-xl pr-4">Total:</span>
         <div class="flex gap-8">
           <span class="text-xl pr-4">
-            {{total}}
+            {{ total.toFixed(2) }}
           </span>
         </div>
       </div>

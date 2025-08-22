@@ -3,9 +3,11 @@ package com.money.SaveMe.init;
 import com.money.SaveMe.Model.Authority;
 import com.money.SaveMe.Service.AuthorityService;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(BootstrapOrder.AUTHORITIES)
 public class AuthorityBootstrap implements CommandLineRunner {
     private final AuthorityService authorityService;
 

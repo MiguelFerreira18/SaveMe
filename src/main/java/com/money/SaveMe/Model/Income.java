@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -46,6 +47,10 @@ public class Income {
     @Column(name = "description")
     private String description;
 
+    @NotNull
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -54,10 +59,12 @@ public class Income {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public Income(User user, Currency currency, BigDecimal amount, String description) {
+
+    public Income(User user, Currency currency, BigDecimal amount, String description, LocalDate date) {
         this.user = user;
         this.currency = currency;
         this.amount = amount;
         this.description = description;
+        this.date = date;
     }
 }

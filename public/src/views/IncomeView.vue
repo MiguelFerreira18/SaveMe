@@ -28,7 +28,7 @@ onMounted(() => {
 })
 
 async function getCurrencies(){
-  const response = await Get("/api/currency",true)
+  const response = await Get("/api/currency/all",true)
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
@@ -40,11 +40,13 @@ async function getCurrencies(){
     isLoading.value.currencies = false
   }else{
     isLoading.value.currencies = false
-    currency.value = response.data
+    const data = await response.data.json()
+    currency.value = data
+    option.value = data[0].id
   }
 }
 async function getIncomes(){
-  const response = await Get("/api/income",true)
+  const response = await Get("/api/income/all",true)
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
@@ -56,7 +58,11 @@ async function getIncomes(){
     isLoading.value.income = false
   }else{
     isLoading.value.income = false
-    incomes.value = response.data
+    const data = await response.data.json()
+    incomes.value = data.map((i) => ({
+      ...i,
+      date: new Date(i.date[0],i.date[1]-1,income.date[2]).toISOString().slice(0,10)
+    }))
   }
 }
 
@@ -84,8 +90,6 @@ const currentPage = ref(1)
 const searchQuery = ref('')
 const option = ref(1) // Should default to €
 const currency = ref([
-  { id: 1, symbol: '€' },
-  { id: 2, symbol: '$' },
 ])
 const dateOption = ref(getToday())
 function getToday() {
@@ -94,6 +98,8 @@ function getToday() {
   return currentDate
 }
 const filteredData = computed(() => {
+  if (!isLoading.value.currency && !isLoading.value.income) {
+
   const searchLower = searchQuery.value.toLowerCase()
   const currencySymbol = currency.value.find( (currency) => currency.id == option.value).symbol
   const compareDate = (a,b) => {
@@ -112,6 +118,9 @@ const filteredData = computed(() => {
     item.symbol.toLowerCase().includes(currencySymbol) &&
     compareDate(item.date.toLowerCase(),dateOption.value.toLowerCase())
   )
+
+  }
+  return incomes.value
 })
 
 function resetSearch() {

@@ -1,6 +1,7 @@
 package com.money.SaveMe.DTO.Income;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record IncomeOutputDto(
@@ -9,6 +10,6 @@ public record IncomeOutputDto(
         String description,
         BigDecimal amount,
         String userId,
-        LocalDateTime createdAt
+        LocalDate date
 ) {
 }
