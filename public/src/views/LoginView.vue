@@ -4,8 +4,10 @@ import { Post } from '@/lib/requests'
 import { IsJWTExpired, SaveJwtFieldsToLocalStorage, ParseJwt } from '@/lib/jwtUtils'
 import router from '@/router'
 import { useToast } from '@/components/Toast/useToast'
+import { useAuth } from '@/composables/useAuth'
 
 const { showToast } = useToast()
+const { checkAuthStatus } = useAuth()
 
 const isLogin = ref(true)
 
@@ -31,20 +33,19 @@ async function handleLogin() {
     showToast('Login failed', 'error')
   } else {
     showToast('Login successful', 'success')
+    const user = await response.data.json()
+    if (user) {
+      localStorage.setItem('username', user.name)
+      checkAuthStatus()
+      setTimeout(() => {
+        router.push('/home')
+      }, 2000)
+    }
   }
 
-  const user = await response.data.json()
-  const authHeader = response.data.headers.get('authorization')
 
-  if (authHeader && !IsJWTExpired(authHeader)) {
-    localStorage.setItem('userId', user.id)
-    localStorage.setItem('username', user.name)
-    SaveJwtFieldsToLocalStorage(ParseJwt(authHeader))
-    localStorage.setItem('token', authHeader)
-  }
-  setTimeout(() => {
-    router.push('/home')
-  }, 2000)
+
+
 }
 
 async function handleRegister() {

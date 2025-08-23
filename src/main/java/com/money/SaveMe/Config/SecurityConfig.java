@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/auth/public/signup").permitAll()
                                 .requestMatchers("/auth/public/login").permitAll()
+                                .requestMatchers("/auth/public/status").permitAll()
                                 .requestMatchers("/currency/**").authenticated()
                                 .anyRequest().permitAll()
 

@@ -19,7 +19,7 @@ const hasErrors = ref({
 
 
 async function getCurrencies(){
-  const response = await Get("/api/currency/all",true)
+  const response = await Get("/api/currency/all")
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')

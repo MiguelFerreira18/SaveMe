@@ -5,48 +5,55 @@ import IncomeView from '@/views/IncomeView.vue'
 import CurrencyView from '@/views/CurrencyView.vue'
 import { IsJWTExpired } from '@/lib/jwtUtils'
 import { isProduction } from '@/lib/config'
+import { useAuth } from '@/composables/useAuth'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView,
-      meta: { public: true },
-    },
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-      meta: { requiresAuth: isProduction ? true : false },
-      children: [
-        {
-          path: '/currency',
-          name: 'currency',
-          component: CurrencyView,
-          meta: { requiresAuth: isProduction ? true : false },
-        },
-        {
-          path: '/income',
-          name: 'income',
-          component: IncomeView,
-          meta: { requiresAuth: isProduction ? true : false },
-        },
-      ],
-    },
-  ],
+        history: createWebHistory(import.meta.env.BASE_URL),
+        routes: [
+                {
+                        path: '/login',
+                        name: 'login',
+                        component: LoginView,
+                        meta: { public: true },
+                },
+                {
+                        path: '/',
+                        name: 'home',
+                        component: HomeView,
+                        meta: { requiresAuth: true },
+                        children: [
+                                {
+                                        path: '/currency',
+                                        name: 'currency',
+                                        component: CurrencyView,
+                                        meta: { requiresAuth: true },
+                                },
+                                {
+                                        path: '/income',
+                                        name: 'income',
+                                        component: IncomeView,
+                                        meta: { requiresAuth: true },
+                                },
+                        ],
+                },
+        ],
 })
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const isAuthenticated = token
-  const isOutDated = IsJWTExpired(token)
-  if (to.meta.requiresAuth && !isAuthenticated && !isOutDated) {
-    next('/')
-  } else {
-    next()
-  }
+router.beforeEach(async (to, from, next) => {
+
+        const { checkAuthStatus } = useAuth()
+
+        if (!to.meta.requiresAuth) {
+                next()
+                return
+        }
+
+        const isAuthenticated = await checkAuthStatus()
+        if (isAuthenticated) {
+                next()
+        } else {
+                next('/login')
+        }
 })
 
 export default router

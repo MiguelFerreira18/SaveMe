@@ -28,7 +28,7 @@ onMounted(() => {
 })
 
 async function getCurrencies(){
-  const response = await Get("/api/currency/all",true)
+  const response = await Get("/api/currency/all")
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
@@ -46,7 +46,7 @@ async function getCurrencies(){
   }
 }
 async function getIncomes(){
-  const response = await Get("/api/income/all",true)
+  const response = await Get("/api/income/all")
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
@@ -88,7 +88,7 @@ const incomes = ref([
 const currentPage = ref(1)
 
 const searchQuery = ref('')
-const option = ref(1) // Should default to €
+const option = ref(1)
 const currency = ref([
 ])
 const dateOption = ref(getToday())
@@ -98,7 +98,12 @@ function getToday() {
   return currentDate
 }
 const filteredData = computed(() => {
-  if (!isLoading.value.currency && !isLoading.value.income) {
+  if (isLoading.value.currencies || isLoading.value.income) {
+    return []
+  }
+    if ((!currency.value || currency.value.length === 0)) {
+    return []
+  }
 
   const searchLower = searchQuery.value.toLowerCase()
   const currencySymbol = currency.value.find( (currency) => currency.id == option.value).symbol
@@ -119,8 +124,6 @@ const filteredData = computed(() => {
     compareDate(item.date.toLowerCase(),dateOption.value.toLowerCase())
   )
 
-  }
-  return incomes.value
 })
 
 function resetSearch() {

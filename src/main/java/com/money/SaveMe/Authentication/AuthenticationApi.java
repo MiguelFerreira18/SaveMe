@@ -5,6 +5,7 @@ import com.money.SaveMe.Model.User;
 import com.money.SaveMe.Model.UserView;
 import com.money.SaveMe.Service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,14 +19,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
@@ -38,6 +39,7 @@ public class AuthenticationApi {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
     private final UserService userService;
 
@@ -55,11 +57,12 @@ public class AuthenticationApi {
     @Value("${app.cookie.secure:false}")
     private boolean cookieSecure;
 
-    public AuthenticationApi(AuthenticationManager authenticationManager, JwtEncoder jwtEncoder, UserService userService, UserMapper userMapper,
+    public AuthenticationApi(AuthenticationManager authenticationManager, JwtEncoder jwtEncoder, JwtDecoder jwtDecoder, UserService userService, UserMapper userMapper,
                              PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
         this.userService = userService;
         this.userMapper = userMapper;
 
@@ -145,6 +148,37 @@ public class AuthenticationApi {
         cookie.setAttribute("SameSite", "Strict");
 
         return cookie;
+    }
+
+    @GetMapping("status")
+    public ResponseEntity<?> chekAuthStatus(HttpServletRequest request){
+        boolean authenticated = isUserAuthenticated(request);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("authenticated", authenticated);
+
+        return ResponseEntity.ok(response);
+    }
+
+    private boolean isUserAuthenticated(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (JWT_COOKIE_NAME.equals(cookie.getName())) {
+                    String token = cookie.getValue();
+                    return validateToken(token);
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean validateToken(String token) {
+        try {
+            jwtDecoder.decode(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @PostMapping("signup")
