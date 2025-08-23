@@ -42,10 +42,6 @@ async function handleLogin() {
       }, 2000)
     }
   }
-
-
-
-
 }
 
 async function handleRegister() {
@@ -64,25 +60,25 @@ async function handleRegister() {
     return
   }
 
-    const response = await Post('/auth/public/signup', {
-      name: registerName.value,
-      email: registerEmail.value,
-      password: registerPassword.value,
-      repeatPassword: registerRepeatPassword.value,
-    })
+  const response = await Post('/auth/public/signup', {
+    name: registerName.value,
+    email: registerEmail.value,
+    password: registerPassword.value,
+    repeatPassword: registerRepeatPassword.value,
+  })
 
-    if (!response.ok) {
-      showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
-    }else if(!response.data.ok){
-      showToast('Server rejected request','error')
-    }else{
-      showToast('Registration successful! Please login.', 'success')
-      isLogin.value = true
-      registerName.value = ''
-      registerEmail.value = ''
-      registerPassword.value = ''
-      registerRepeatPassword.value = ''
-    }
+  if (!response.ok) {
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+  } else if (!response.data.ok) {
+    showToast('Server rejected request', 'error')
+  } else {
+    showToast('Registration successful! Please login.', 'success')
+    isLogin.value = true
+    registerName.value = ''
+    registerEmail.value = ''
+    registerPassword.value = ''
+    registerRepeatPassword.value = ''
+  }
 }
 </script>
 

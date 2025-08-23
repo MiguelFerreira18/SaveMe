@@ -2,12 +2,12 @@
 defineProps({
   isLoading: {
     type: Boolean,
-    default: true
+    default: true,
   },
   message: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 </script>
 
@@ -17,4 +17,3 @@ defineProps({
     <p v-if="message" class="mt-4 text-gray-600">{{ message }}</p>
   </div>
 </template>
-

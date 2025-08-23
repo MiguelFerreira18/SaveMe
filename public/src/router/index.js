@@ -8,52 +8,51 @@ import { isProduction } from '@/lib/config'
 import { useAuth } from '@/composables/useAuth'
 
 const router = createRouter({
-        history: createWebHistory(import.meta.env.BASE_URL),
-        routes: [
-                {
-                        path: '/login',
-                        name: 'login',
-                        component: LoginView,
-                        meta: { public: true },
-                },
-                {
-                        path: '/',
-                        name: 'home',
-                        component: HomeView,
-                        meta: { requiresAuth: true },
-                        children: [
-                                {
-                                        path: '/currency',
-                                        name: 'currency',
-                                        component: CurrencyView,
-                                        meta: { requiresAuth: true },
-                                },
-                                {
-                                        path: '/income',
-                                        name: 'income',
-                                        component: IncomeView,
-                                        meta: { requiresAuth: true },
-                                },
-                        ],
-                },
-        ],
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { public: true },
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: '/currency',
+          name: 'currency',
+          component: CurrencyView,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: '/income',
+          name: 'income',
+          component: IncomeView,
+          meta: { requiresAuth: true },
+        },
+      ],
+    },
+  ],
 })
 
 router.beforeEach(async (to, from, next) => {
+  const { checkAuthStatus } = useAuth()
 
-        const { checkAuthStatus } = useAuth()
+  if (!to.meta.requiresAuth) {
+    next()
+    return
+  }
 
-        if (!to.meta.requiresAuth) {
-                next()
-                return
-        }
-
-        const isAuthenticated = await checkAuthStatus()
-        if (isAuthenticated) {
-                next()
-        } else {
-                next('/login')
-        }
+  const isAuthenticated = await checkAuthStatus()
+  if (isAuthenticated) {
+    next()
+  } else {
+    next('/login')
+  }
 })
 
 export default router

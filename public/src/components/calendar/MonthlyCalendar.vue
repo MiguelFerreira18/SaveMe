@@ -25,7 +25,6 @@ function incrementAYear(dateStr) {
 function updateDate(value) {
   emit('update:modelValue', value.target.value)
 }
-
 </script>
 
 <template>
