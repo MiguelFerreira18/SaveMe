@@ -6,7 +6,7 @@ A self financial management tool, allows the user to manage their financial life
 In this current day and age where economic uncertainty worries our minds, there is an increased importance in carefully managing our financial situation. After learning a bit of financial literacy, it made me understand the importance of good money management, giving me an opportunity to develop this software application. Another big factor was the security of self hosting the app, not allowing a third party to store financial data.
 
 ## What the tool won't do
-Syncronize data wih banks
+Syncronize data with banks
 
 ## Tooling
 - Docker
