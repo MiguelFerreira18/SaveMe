@@ -234,7 +234,7 @@ async function handleIncomeCreation() {
       :total="filteredData.reduce((acc, i) => acc + i.amount, 0)"
       :data="filteredData"
       :columns="['description', 'amount', 'symbol']"
-      :isCurrency="false"
+      :isNumeric="true"
       :pageSize="15"
       v-model:current-page="currentPage"
     />

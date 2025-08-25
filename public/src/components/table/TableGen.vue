@@ -10,7 +10,7 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  isCurrency: {
+  isNumeric: {
     type: Boolean,
     required: false,
     default: false,
@@ -78,7 +78,7 @@ const goToPrevPage = () => changePage(props.currentPage - 1)
 const goToNextPage = () => changePage(props.currentPage + 1)
 
 const formatValue = (value) => {
-  if (props.isCurrency && typeof value === 'number') {
+  if (props.isNumeric && typeof value === 'number') {
     return new Intl.NumberFormat('pt-PT', {
       style: 'currency',
       currency: 'EUR',

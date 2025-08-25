@@ -11,31 +11,31 @@ import NoValue from '@/components/error/NoValue.vue'
 
 const { showToast } = useToast()
 const isLoading = ref({
-  currencies: true,
+  categories: true,
 })
 const hasErrors = ref({
-  currencies: false,
+  categories: false,
 })
 
-async function getCurrencies() {
-  const response = await Get('/api/currency/all')
+async function getCategories() {
+  const response = await Get('/api/category/all')
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
-    hasErrors.value.currencies = true
-    isLoading.value.currencies = false
+    hasErrors.value.categories = true
+    isLoading.value.categories = false
   } else if (!response.data.ok) {
     showToast('Failed to fetch currencies. Server refused connection', 'error')
-    hasErrors.value.currencies = true
-    isLoading.value.currencies = false
+    hasErrors.value.categories = true
+    isLoading.value.categories = false
   } else {
-    isLoading.value.currencies = false
+    isLoading.value.categories = false
     const data = await response.data.json()
-    currency.value = data
+    categories.value = data
   }
 }
 
-const currency = ref([
+const categories = ref([
   // { id: 1, name: 'dollar', symbol: '$' },
   // { id: 2, name: 'euro', symbol: '€' },
   // { id: 3, name: 'pound', symbol: '£' },
@@ -50,20 +50,20 @@ const currentPage = ref(1)
 
 const searchQuery = ref('')
 const filteredData = computed(() => {
-  if (!isLoading.value.currency) {
+  if (!isLoading.value.categories) {
     if (!searchQuery.value.trim()) {
-      return currency.value
+      return categories.value
     }
 
     const searchLower = searchQuery.value.toLowerCase()
 
-    return currency.value.filter(
+    return categories.value.filter(
       (item) =>
         item.name.toLowerCase().includes(searchLower) ||
-        item.symbol.toLowerCase().includes(searchLower),
+        item.description.toLowerCase().includes(searchLower),
     )
   }
-  //TODO : FIX THIS ERROR, DOES NOT HAVE RETURN
+  return []
 })
 
 function resetSearch() {
@@ -72,49 +72,49 @@ function resetSearch() {
 
 const openModal = ref(false)
 
-const currencyName = ref('')
-const currencySymbol = ref('')
-async function handleCurrencyCreation() {
-  const currency = {
-    name: currencyName.value,
-    symbol: currencySymbol.value,
+const categoryName = ref('')
+const categoryDescription = ref('')
+async function handleCategoryCreation() {
+  const category = {
+    name: categoryName.value,
+    description: categoryDescription.value,
   }
 
-  const response = await Post('/api/currency', currency)
+  const response = await Post('/api/category', category)
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
   } else if (!response.data.ok) {
     showToast('Server rejected the request', 'error')
   } else {
-    showToast('Currency was added successfully', 'success')
+    showToast('Category was added successfully', 'success')
     openModal.value = false
-    currencyName.value = ''
-    currencySymbol.value = ''
+    categoryName.value = ''
+    categoryDescription.value = ''
   }
 }
 
 onMounted(() => {
-  getCurrencies()
+  getCategories()
 })
 </script>
 
 <template>
   <Toast />
-  <LoadingSpinner v-if="isLoading.currencies" :isLoading="isLoading.currencies" />
+  <LoadingSpinner v-if="isLoading.categories" :isLoading="isLoading.categories" />
 
   <ErrorServer
-    v-else-if="hasErrors.currencies"
+    v-else-if="hasErrors.categories"
     errorMessage="An Error has occured on the server"
     :retry="
       () => {
-        isLoading.currencies = true
-        getCurrencies()
+        isLoading.categories = true
+        getCategories()
       }
     "
   />
   <div v-else>
-    <h1>Currency View</h1>
+    <h1>Category View</h1>
     <div class="flex flex-col md:flex-row px-5 py-2 gap-2 md:items-baseline">
       <div class="flex flex-2 flex-col sm:flex-row gap-2">
         <span class="relative flex items-center">
@@ -156,34 +156,34 @@ onMounted(() => {
     <NoValue
       v-if="filteredData.length === 0"
       size="text-3xl"
-      text="You don't have any currencies added.
-      Make sure to add your currencies"
+      text="You don't have any category added.
+      Make sure to add your categories"
     />
     <TableGen
       v-else
       :data="filteredData"
-      :columns="['name', 'symbol']"
+      :columns="['name', 'description']"
       :isNumeric="false"
       :pageSize="15"
       v-model:current-page="currentPage"
     />
     <Modal :isOpen="openModal" @close="openModal = false">
       <div>
-        <h2 class="text-xl font-bold mb-4">Create a Currency</h2>
+        <h2 class="text-xl font-bold mb-4">Create a Category</h2>
         <input
-          v-model="currencyName"
+          v-model="categoryName"
           type="text"
-          placeholder="Currency Name"
+          placeholder="Category Name"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <input
-          v-model="currencySymbol"
+          v-model="categoryDescription"
           type="text"
-          placeholder="Currency Symbol"
+          placeholder="Category Description"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <button
-          @click="handleCurrencyCreation"
+          @click="handleCategoryCreation"
           class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 active:bg-green-700 transition"
         >
           Confirm
@@ -193,4 +193,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+

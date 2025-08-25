@@ -52,7 +52,7 @@ public class CurrencyController {
         return ResponseEntity.ok(currencyDtoOut);
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<CurrencyDtoOut> saveCurrency(@RequestBody SaveCurrencyDto currency) {
         Currency savedCurrency = currencyService.saveCurrency(currency);
         CurrencyDtoOut currencyDtoOut = new CurrencyDtoOut(

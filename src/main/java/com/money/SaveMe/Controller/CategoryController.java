@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.StreamSupport;
 
-@RestController("/api/categoy")
+@RestController
+@RequestMapping("/api/category")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -54,7 +55,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDtoOut);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<CategoryDtoOut> saveCategory(@RequestBody SaveCategoryDto categoryDto) {
 
         Category category = categoryService.saveCategory(categoryDto);
