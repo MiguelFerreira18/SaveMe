@@ -55,7 +55,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDtoOut);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<CategoryDtoOut> saveCategory(@RequestBody SaveCategoryDto categoryDto) {
 
         Category category = categoryService.saveCategory(categoryDto);

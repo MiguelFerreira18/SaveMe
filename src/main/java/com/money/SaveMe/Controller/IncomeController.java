@@ -67,7 +67,7 @@ public class IncomeController {
         return ResponseEntity.ok(incomeOutputDto);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<IncomeOutputDto> saveIncome(@RequestBody SaveIncomeDto income) {
         Income savedIncome = incomeService.saveIncome(income);
 
@@ -87,7 +87,7 @@ public class IncomeController {
         return ResponseEntity.ok(incomeOutputDto);
     }
 
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<IncomeOutputDto> updateIncome(@RequestBody UpdateIncomeDto income) {
         Income updatedIncome = incomeService.updateIncome(income);
 
