@@ -64,6 +64,7 @@ public class IncomeService {
         oldIncome.setAmount(updatedIncomeDto.amount());
         oldIncome.setDescription(updatedIncomeDto.description());
         oldIncome.setCurrency(currency);
+        oldIncome.setDate(updatedIncomeDto.date());
 
         return incomeRepo.save(oldIncome);
     }

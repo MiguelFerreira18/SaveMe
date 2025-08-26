@@ -87,14 +87,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers("/api/income/**").authenticated()
+                                .requestMatchers("/api/expense/**").authenticated()
+                                .requestMatchers("/api/currency/**").authenticated()
+                                .requestMatchers("/api/category/**").authenticated()
                                 .requestMatchers("/auth/public/signup").permitAll()
                                 .requestMatchers("/auth/public/login").permitAll()
                                 .requestMatchers("/auth/public/status").permitAll()
-                                .requestMatchers("/api/income/**").authenticated()
-                                .requestMatchers("/api/currency/**").authenticated()
-                                .requestMatchers("/api/category/**").authenticated()
-                                .anyRequest().permitAll()
-
                 )
                 .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer((oauth) -> oauth.bearerTokenResolver(cookieBearerTokenResolver)
