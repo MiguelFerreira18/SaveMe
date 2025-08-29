@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Component
@@ -44,14 +45,14 @@ public class IncomeBootstrap implements CommandLineRunner {
         int numberOfIncomesEUR2 = 4;
         createIncomes(u2, eur2, numberOfIncomesEUR2);
 
-
     }
 
     private void createIncomes(User user, Currency currency, int numberOfIncomes) {
         for (int i = 1; i <= numberOfIncomes; i++) {
-            double value = i * 100.23;
-            if (incomeRepo.findIncomeByUserIdCurrencyAndAmount(user.getId(), currency.getId(), BigDecimal.valueOf(value)).isEmpty()) {
-                Income income = new Income(user, currency, BigDecimal.valueOf(value), STR."INCOME\{i}", LocalDate.now().minusDays(i));
+            BigDecimal value = new BigDecimal(i * 100.23).setScale(2, RoundingMode.HALF_UP);
+            String description = STR."INCOME\{i}";
+            if (incomeRepo.findIncomeByUserIdCurrencyAndAmount(user.getId(), currency.getId(), value).isEmpty()) {
+                Income income = new Income(user, currency, value, description, LocalDate.now().minusDays(i));
                 incomeRepo.save(income);
             }
 
