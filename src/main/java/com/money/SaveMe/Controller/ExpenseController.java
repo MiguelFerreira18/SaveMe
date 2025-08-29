@@ -32,6 +32,7 @@ public class ExpenseController {
                         expense.getId(),
                         expense.getCategory().getName(),
                         expense.getCurrency().getSymbol(),
+                        expense.getDescription(),
                         expense.getAmount(),
                         expense.getUser().getId(),
                         expense.getDate()
@@ -55,6 +56,7 @@ public class ExpenseController {
                 expense.getId(),
                 expense.getCategory().getName(),
                 expense.getCurrency().getSymbol(),
+                expense.getDescription(),
                 expense.getAmount(),
                 expense.getUser().getId(),
                 expense.getDate()
@@ -76,6 +78,7 @@ public class ExpenseController {
                 savedExpense.getId(),
                 savedExpense.getCategory().getName(),
                 savedExpense.getCurrency().getSymbol(),
+                savedExpense.getDescription(),
                 savedExpense.getAmount(),
                 savedExpense.getUser().getId(),
                 savedExpense.getDate()
@@ -96,6 +99,7 @@ public class ExpenseController {
                 updatedExpense.getId(),
                 updatedExpense.getCategory().getName(),
                 updatedExpense.getCurrency().getSymbol(),
+                updatedExpense.getDescription(),
                 updatedExpense.getAmount(),
                 updatedExpense.getUser().getId(),
                 updatedExpense.getDate()

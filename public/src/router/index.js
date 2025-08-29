@@ -7,6 +7,7 @@ import { IsJWTExpired } from '@/lib/jwtUtils'
 import { isProduction } from '@/lib/config'
 import { useAuth } from '@/composables/useAuth'
 import CategoryView from '@/views/CategoryView.vue'
+import ExpenseView from '@/views/ExpenseView.vue'
 
 const router = createRouter({
         history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,11 +37,18 @@ const router = createRouter({
                                         meta: { requiresAuth: true },
                                 },
                                 {
+                                        path: '/expense',
+                                        name: 'expense',
+                                        component: ExpenseView,
+                                        meta: { requiresAuth: true }
+                                },
+                                {
                                         path: '/category',
                                         name: 'category',
                                         component: CategoryView,
                                         meta: { requiresAuth: true }
-                                }
+                                },
+
                         ],
                 },
         ],

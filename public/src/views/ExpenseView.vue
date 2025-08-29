@@ -15,16 +15,19 @@ const { showToast } = useToast()
 
 const isLoading = ref({
   currencies: true,
-  income: true,
+  categories: true,
+  expense: true,
 })
 const hasErrors = ref({
   currencies: false,
-  income: false,
+  categories: false,
+  expense: false,
 })
 
 onMounted(() => {
   getCurrencies()
-  getIncomes()
+  getCategories()
+  getExpense()
 })
 
 async function getCurrencies() {
@@ -42,34 +45,52 @@ async function getCurrencies() {
     isLoading.value.currencies = false
     const data = await response.data.json()
     currency.value = data
-    option.value = data[0].id
+    currencyOption.value = data[0].id
+    console.log(data);
   }
 }
-async function getIncomes() {
-  const response = await Get('/api/income/all')
+async function getCategories(){
+  const response = await Get('/api/category/all')
+  if(!response.ok){
+    showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
+    hasErrors.value.categories = true
+    isLoading.value.categories = false
+  }else if(!response.data.ok){
+    hasErrors.value.categories = true
+    isLoading.value.categories = false
+  } else {
+    isLoading.value.categories = false
+    const data = await response.data.json()
+    category.value = data
+    categoryOption.value = data[0].id
+  }
+}
+async function getExpense() {
+  const response = await Get('/api/expense/all')
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
-    hasErrors.value.income = true
-    isLoading.value.income = false
+    hasErrors.value.expense = true
+    isLoading.value.expense = false
   } else if (!response.data.ok) {
-    showToast('Failed to fetch income. Server refused connection', 'error')
-    hasErrors.value.income = true
-    isLoading.value.income = false
+    showToast('Failed to fetch expenses. Server refused connection', 'error')
+    hasErrors.value.expense = true
+    isLoading.value.expense = false
   } else {
-    isLoading.value.income = false
+    isLoading.value.expense = false
     const data = await response.data.json()
-    incomes.value = data.map((i) => ({
+    expenses.value = data.map((i) => ({
       ...i,
-      date: new Date(i.date[0], i.date[1] - 1, income.date[2]).toISOString().slice(0, 10),
+      date: new Date(i.date[0], i.date[1] - 1, expense.date[2]).toISOString().slice(0, 10),
     }))
   }
 }
 
-const incomes = ref([
+const expenses = ref([
   {
     id: 1,
     symbol: '€',
+    category: 'monthly',
     description: 'anyDescription',
     amount: 120,
     userId: '92a167e6-f909-4ee5-9443-1809e93fa092',
@@ -78,6 +99,7 @@ const incomes = ref([
   {
     id: 2,
     symbol: '€',
+    category: 'monthly',
     description: 'anyDescription2',
     amount: 130,
     userId: '92a167e6-f909-4ee5-9443-1809e93fa092',
@@ -88,8 +110,10 @@ const incomes = ref([
 const currentPage = ref(1)
 
 const searchQuery = ref('')
-const option = ref(1)
+const currencyOption = ref(1)
 const currency = ref([])
+const category = ref([])
+const categoryOption = ref(1)
 const dateOption = ref(getToday())
 function getToday() {
   const date = new Date()
@@ -97,15 +121,18 @@ function getToday() {
   return currentDate
 }
 const filteredData = computed(() => {
-  if (isLoading.value.currencies || isLoading.value.income) {
+  if (isLoading.value.currencies || isLoading.value.expense || isLoading.value.categories) {
     return []
   }
-  if (!currency.value || currency.value.length === 0) {
+  if (!currency.value || currency.value.length === 0 || !category.value || category.value.length
+    === 0) {
     return []
   }
 
   const searchLower = searchQuery.value.toLowerCase()
-  const currencySymbol = currency.value.find((currency) => currency.id == option.value).symbol
+  const currencySymbol = currency.value.find((currency) => currency.id == currencyOption.value).symbol
+  const categoryName = category.value.find((category) => category.id ==
+    categoryOption.value).name.toLowerCase()
   const compareDate = (a, b) => {
     const date = new Date(a)
     const compDate = new Date(b)
@@ -113,12 +140,13 @@ const filteredData = computed(() => {
     return date.getFullYear() == compDate.getFullYear() && date.getMonth() == compDate.getMonth()
   }
 
-  return incomes.value.filter(
+  return expenses.value.filter(
     (item) =>
       (item.description.toLowerCase().includes(searchLower) ||
         item.symbol.toLowerCase().includes(searchLower) ||
         item.amount.toString().toLowerCase().includes(searchLower)) &&
       item.symbol.toLowerCase().includes(currencySymbol) &&
+      item.category.toLowerCase().includes(categoryName) &&
       compareDate(item.date.toLowerCase(), dateOption.value.toLowerCase()),
   )
 })
@@ -126,30 +154,33 @@ const filteredData = computed(() => {
 function resetSearch() {
   searchQuery.value = ''
   dateOption.value = getToday()
-  option.value = 1
+  currencyOption.value = 1
+  categoryOption.value = 1
 }
 
 const openModal = ref(false)
 
-const income = reactive({
-  symbol: 0,
+const expense = reactive({
+  currencyId: 1,
+  categoryId: 1,
   date: getToday(),
   amount: 0.0,
   description: '',
 })
 
-async function handleIncomeCreation() {
-  const response = await Post('/api/income', income)
+async function handleExpenseCreation() {
+  const response = await Post('/api/expense', expense)
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
   } else if (!response.data.ok) {
     showToast('Server rejected request', 'error')
   } else {
-    showToast('Income was added successfully', 'success')
-    income.symbol = ''
-    income.amount = 0.0
-    income.description = ''
-    income.date = getToday()
+    showToast('Expense was added successfully', 'success')
+    expense.currencyId = 1
+    expense.categoryId = 1
+    expense.amount = 0.0
+    expense.description = ''
+    expense.date = getToday()
   }
 }
 </script>
@@ -157,25 +188,26 @@ async function handleIncomeCreation() {
 <template>
   <Toast />
   <LoadingSpinner
-    v-if="isLoading.income && isLoading.currencies"
-    :isLoading="isLoading.income && isLoading.currencies"
+    v-if="isLoading.expense && isLoading.currencies && isLoading.categories"
+    :isLoading="isLoading.expense && isLoading.currencies && isLoading.categories"
   />
 
   <ErrorServer
-    v-else-if="hasErrors.currencies || hasErrors.income"
+    v-else-if="hasErrors.currencies || hasErrors.expense || hasErrors.categories"
     errorMessage="An Error has occured on the server"
     :retry="
       () => {
         isLoading.currencies = true
-        isLoading.income = true
+        isLoading.expense = true
         getCurrencies()
-        getIncomes()
+        getCategories()
+        getExpense()
       }
     "
   />
 
   <div v-else>
-    <h1>Income View</h1>
+    <h1>Expense View</h1>
     <div class="flex flex-col md:flex-row pl-4 pr-5 py-2 gap-2 md:items-baseline">
       <div class="flex flex-2 flex-col sm:flex-row gap-2">
         <span class="relative flex items-center">
@@ -203,7 +235,10 @@ async function handleIncomeCreation() {
             <MonthlyCalendar v-model="dateOption" name="calendar" :getToday="getToday" />
           </div>
           <div class="w-full sm:w-auto md:w-15 flex items-end">
-            <CurrencyDropdown v-model="option" label="currencies" display-property="symbol" :data="currency" />
+            <CurrencyDropdown v-model="currencyOption" label="currencies" display-property="symbol" :data="currency" />
+          </div>
+          <div class="w-full sm:w-auto md:w-30 flex items-end">
+            <CurrencyDropdown v-model="categoryOption" label="categories" display-property="name" :data="category" />
           </div>
         </div>
 
@@ -226,43 +261,47 @@ async function handleIncomeCreation() {
     <NoValue
       v-if="filteredData.length === 0"
       size="text-3xl"
-      text="You don't have any income added.
-      Make sure to add your sources of income"
+      text="You don't have any expense added.
+      Make sure to add your sources of expense"
     />
     <TableGen
       v-else
       :total="filteredData.reduce((acc, i) => acc + i.amount, 0)"
       :data="filteredData"
-      :columns="['description', 'amount', 'symbol']"
+      :columns="['description','category' ,'amount', 'symbol']"
       :isNumeric="true"
       :pageSize="15"
       v-model:current-page="currentPage"
     />
     <Modal :isOpen="openModal" @close="openModal = false">
       <div>
-        <h2 class="text-xl font-bold mb-4">Insert Income Source</h2>
+        <h2 class="text-xl font-bold mb-4">Insert Expense Source</h2>
         <input
-          v-model="income.description"
+          v-model="expense.description"
           type="text"
           placeholder="Description"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <input
-          v-model="income.amount"
+          v-model="expense.amount"
           type="text"
           placeholder="Amount"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <div class="flex mb-3 gap-1 w-full">
           <div class="w-full flex items-end">
-            <MonthlyCalendar v-model="income.date" name="calendar" :getToday="getToday" />
+            <MonthlyCalendar v-model="expense.date" name="calendar" :getToday="getToday" />
           </div>
           <div class="w-20 flex items-end">
-            <CurrencyDropdown v-model="income.amount" label="currencies" display-property="symbol" :data="currency" />
+            <CurrencyDropdown v-model="expense.currencyId" label="currencies" display-property="symbol" :data="currency" />
+          </div>
+          <div class="w-50 flex items-end">
+            <CurrencyDropdown v-model="expense.categoryId" label="categories"
+              display-property="name" :data="category" />
           </div>
         </div>
         <button
-          @click="handleIncomeCreation"
+          @click="handleExpenseCreation"
           class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 active:bg-green-700 transition"
         >
           Confirm
@@ -272,4 +311,4 @@ async function handleIncomeCreation() {
   </div>
 </template>
 
-<style scoped></style>
+

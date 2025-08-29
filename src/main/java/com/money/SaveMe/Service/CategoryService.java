@@ -44,5 +44,11 @@ public class CategoryService {
         categoryRepo.deleteById(id, userUUID);
     }
 
+    public Category findCategoryByNameDescriptionAndUserId(String name, String description, String userId ){
+        return categoryRepo.findByNameDescriptionAndUserId(name, description, userId)
+                .orElse(null);
+
+    }
+
 
 }

@@ -8,6 +8,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  displayProperty:{
+    type: String,
+    required: true,
+  }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -28,7 +32,7 @@ function updateOption(val) {
       :value="currency.id"
       @click="updateOption(currency.id)"
     >
-      {{ currency.symbol }}
+      {{ currency[displayProperty] }}
     </option>
   </select>
 </template>

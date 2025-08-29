@@ -7,6 +7,7 @@ public record ExpenseOutDto(
         Long id,
         String category,
         String symbol,
+        String description,
         BigDecimal amount,
         String userId,
         LocalDate date

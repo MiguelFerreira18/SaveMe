@@ -22,8 +22,8 @@ public interface ExpenseRepo extends CrudRepository<Expense,Long> {
     @Query("SELECT e FROM Expense e WHERE e.id = ?1 AND e.user.id = ?2")
     public Optional<Expense> findByExpenseIdAndUserId(Long id, String userUUID);
 
-    @Query("SELECT e FROM Expense e WHERE e.user.id = ?1 AND e.currency.id = ?2 AND e.amount = ?3")
-    public Optional<Expense> findExpenseByUserIdCurrencyAndAmount(String userId, Long currencyId, BigDecimal amount);
+    @Query("SELECT e FROM Expense e WHERE e.user.id = ?1 AND e.currency.id = ?2 AND e.category.id = ?3 AND e.description = ?4 AND e.amount = ?5")
+    public Optional<Expense> findExpenseByUserIdCurrencyCategoryAndAmount(String userId, Long currencyId, Long categoryId, String description, BigDecimal amount);
 
     @Transactional
     @Modifying
