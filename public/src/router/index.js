@@ -8,6 +8,7 @@ import { isProduction } from '@/lib/config'
 import { useAuth } from '@/composables/useAuth'
 import CategoryView from '@/views/CategoryView.vue'
 import ExpenseView from '@/views/ExpenseView.vue'
+import WishView from '@/views/WishView.vue'
 
 const router = createRouter({
         history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,12 @@ const router = createRouter({
                                         path: '/expense',
                                         name: 'expense',
                                         component: ExpenseView,
+                                        meta: { requiresAuth: true }
+                                },
+                                {
+                                        path: '/wish',
+                                        name: 'wish',
+                                        component: WishView,
                                         meta: { requiresAuth: true }
                                 },
                                 {

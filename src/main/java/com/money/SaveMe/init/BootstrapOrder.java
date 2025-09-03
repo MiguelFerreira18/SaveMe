@@ -6,5 +6,6 @@ public class BootstrapOrder {
     public static final int CURRENCIES = 3;
     public static final int CATEGORIES = 4;
     public static final int INCOMES = 5;
-    public static final int EXPENSES = 6;
+    public static final int WISHES = 6;
+    public static final int EXPENSES = 7;
 }

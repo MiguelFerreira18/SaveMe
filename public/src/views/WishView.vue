@@ -15,16 +15,16 @@ const { showToast } = useToast()
 
 const isLoading = ref({
   currencies: true,
-  income: true,
+  wish: true,
 })
 const hasErrors = ref({
   currencies: false,
-  income: false,
+  wish: false,
 })
 
 onMounted(() => {
   getCurrencies()
-  getIncomes()
+  getWishes()
 })
 
 async function getCurrencies() {
@@ -42,31 +42,32 @@ async function getCurrencies() {
     isLoading.value.currencies = false
     const data = await response.data.json()
     currency.value = data
+    wish.currencyId = data[0].id
     option.value = data[0].id
   }
 }
-async function getIncomes() {
-  const response = await Get('/api/income/all')
+async function getWishes() {
+  const response = await Get('/api/wish/all')
 
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
-    hasErrors.value.income = true
-    isLoading.value.income = false
+    hasErrors.value.wish = true
+    isLoading.value.wish = false
   } else if (!response.data.ok) {
-    showToast('Failed to fetch income. Server refused connection', 'error')
-    hasErrors.value.income = true
-    isLoading.value.income = false
+    showToast('Failed to fetch wish. Server refused connection', 'error')
+    hasErrors.value.wish = true
+    isLoading.value.wish = false
   } else {
-    isLoading.value.income = false
+    isLoading.value.wish = false
     const data = await response.data.json()
-    incomes.value = data.map((i) => ({
+    wishes.value = data.map((i) => ({
       ...i,
-      date: new Date(i.date[0], i.date[1] - 1, income.date[2]).toISOString().slice(0, 10),
+      date: new Date(i.date[0], i.date[1] - 1, wish.date[2]).toISOString().slice(0, 10),
     }))
   }
 }
 
-const incomes = ref([
+const wishes = ref([
   {
     id: 1,
     symbol: '€',
@@ -84,7 +85,7 @@ const incomes = ref([
     date: '2025-08-21',
   },
 ])
-// TODO: MAKE A DEFAULT CURRENCY AT FIRST POSITION OF THE DATA LIST
+
 const currentPage = ref(1)
 
 const searchQuery = ref('')
@@ -97,7 +98,7 @@ function getToday() {
   return currentDate
 }
 const filteredData = computed(() => {
-  if (isLoading.value.currencies || isLoading.value.income) {
+  if (isLoading.value.currencies || isLoading.value.wish) {
     return []
   }
   if (!currency.value || currency.value.length === 0) {
@@ -113,7 +114,7 @@ const filteredData = computed(() => {
     return date.getFullYear() == compDate.getFullYear() && date.getMonth() == compDate.getMonth()
   }
 
-  return incomes.value.filter(
+  return wishes.value.filter(
     (item) =>
       (item.description.toLowerCase().includes(searchLower) ||
         item.symbol.toLowerCase().includes(searchLower) ||
@@ -131,25 +132,25 @@ function resetSearch() {
 
 const openModal = ref(false)
 
-const income = reactive({
+const wish = reactive({
   currencyId: 0,
   date: getToday(),
   amount: 0.0,
   description: '',
 })
 
-async function handleIncomeCreation() {
-  const response = await Post('/api/income', income)
+async function handleWishCreation() {
+  const response = await Post('/api/wish', wish)
   if (!response.ok) {
     showToast(`failed: ${response.error.message || 'Server unreachable'}`, 'error')
   } else if (!response.data.ok) {
     showToast('Server rejected request', 'error')
   } else {
-    showToast('Income was added successfully', 'success')
-    income.currencyId = currency.value[0].id
-    income.amount = 0.0
-    income.description = ''
-    income.date = getToday()
+    showToast('wish was added successfully', 'success')
+    wish.symbol = currency.value[0].id
+    wish.amount = 0.0
+    wish.description = ''
+    wish.date = getToday()
   }
 }
 </script>
@@ -157,25 +158,25 @@ async function handleIncomeCreation() {
 <template>
   <Toast />
   <LoadingSpinner
-    v-if="isLoading.income && isLoading.currencies"
-    :isLoading="isLoading.income && isLoading.currencies"
+    v-if="isLoading.wish && isLoading.currencies"
+    :isLoading="isLoading.wish && isLoading.currencies"
   />
 
   <ErrorServer
-    v-else-if="hasErrors.currencies || hasErrors.income"
+    v-else-if="hasErrors.currencies || hasErrors.wish"
     errorMessage="An Error has occured on the server"
     :retry="
       () => {
         isLoading.currencies = true
-        isLoading.income = true
+        isLoading.wish = true
         getCurrencies()
-        getIncomes()
+        getwish()
       }
     "
   />
 
   <div v-else>
-    <h1>Income View</h1>
+    <h1>wish View</h1>
     <div class="flex flex-col md:flex-row pl-4 pr-5 py-2 gap-2 md:items-baseline">
       <div class="flex flex-2 flex-col sm:flex-row gap-2">
         <span class="relative flex items-center">
@@ -226,8 +227,8 @@ async function handleIncomeCreation() {
     <NoValue
       v-if="filteredData.length === 0"
       size="text-3xl"
-      text="You don't have any income added.
-      Make sure to add your sources of income"
+      text="You don't have any wish added.
+      Make sure to add your sources of wish"
     />
     <TableGen
       v-else
@@ -240,29 +241,29 @@ async function handleIncomeCreation() {
     />
     <Modal :isOpen="openModal" @close="openModal = false">
       <div>
-        <h2 class="text-xl font-bold mb-4">Insert Income Source</h2>
+        <h2 class="text-xl font-bold mb-4">Insert Wish</h2>
         <input
-          v-model="income.description"
+          v-model="wish.description"
           type="text"
           placeholder="Description"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <input
-          v-model="income.amount"
+          v-model="wish.amount"
           type="text"
           placeholder="Amount"
           class="w-full mb-3 p-2 border border-gray-300 rounded"
         />
         <div class="flex mb-3 gap-1 w-full">
           <div class="w-full flex items-end">
-            <MonthlyCalendar v-model="income.date" name="calendar" :getToday="getToday" />
+            <MonthlyCalendar v-model="wish.date" name="calendar" :getToday="getToday" />
           </div>
           <div class="w-20 flex items-end">
-            <CurrencyDropdown v-model="income.currencyId" label="currencies" display-property="symbol" :data="currency" />
+            <CurrencyDropdown v-model="wish.currencyId" label="currencies" display-property="symbol" :data="currency" />
           </div>
         </div>
         <button
-          @click="handleIncomeCreation"
+          @click="handleWishCreation"
           class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 active:bg-green-700 transition"
         >
           Confirm
@@ -272,4 +273,4 @@ async function handleIncomeCreation() {
   </div>
 </template>
 
-<style scoped></style>
+

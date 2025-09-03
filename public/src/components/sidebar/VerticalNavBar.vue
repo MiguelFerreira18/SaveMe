@@ -22,6 +22,8 @@ import SidebarLink from './SidebarLink.vue'
     </h1>
     <SidebarLink to="/dashboard" icon="fas fa-chart-bar">Dashboard</SidebarLink>
     <SidebarLink to="/income" icon="fas fa-coins">Income</SidebarLink>
+    <SidebarLink to="/expense" icon="fas fa-coins">Expenses</SidebarLink>
+    <SidebarLink to="/wish" icon="fas fa-coins">Whishes</SidebarLink>
     <SidebarLink to="/currency" icon="fas fa-coins">Currency</SidebarLink>
     <SidebarLink to="/" icon="fas fa-check">Login</SidebarLink>
   </nav>

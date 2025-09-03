@@ -89,6 +89,7 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers("/api/income/**").authenticated()
                                 .requestMatchers("/api/expense/**").authenticated()
+                                .requestMatchers("/api/wish/**").authenticated()
                                 .requestMatchers("/api/currency/**").authenticated()
                                 .requestMatchers("/api/category/**").authenticated()
                                 .requestMatchers("/auth/public/signup").permitAll()
