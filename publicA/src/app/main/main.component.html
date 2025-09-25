@@ -1,0 +1,29 @@
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav #sidenav mode="push" hasBackdrop="true" class="w-64 bg-gray-800 text-white">
+    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+      <span class="font-semibold">Menu</span>
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon class="text-white">close</mat-icon>
+      </button>
+    </div>
+    <nav class="flex flex-col gap-3 p-4">
+      @for (link of routerLinks; track link.name) {
+        <a class="hover:bg-gray-300 rounded px-3 py-2" [routerLink]="link.link">{{ link.name }}</a>
+      }
+    </nav>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <header class="flex items-center justify-between bg-gray-100 px-4 py-3 shadow">
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="font-bold text-lg"><a routerLink="/">SaveMe</a></span>
+    </header>
+
+    <main class="p-6">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<app-toast></app-toast>

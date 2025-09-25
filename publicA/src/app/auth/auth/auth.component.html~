@@ -1,0 +1,53 @@
+<div class="h-screen flex justify-center items-center">
+  @if (isLogin) {
+    <form class="flex flex-col items-center p-10 m-5 rounded-2xl shadow-2xl">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" />
+      </mat-form-field>
+      <button class="w-20" mat-flat-button="filled">Login</button>
+
+      <p class="mt-4 text-center text-sm text-gray-600">
+        Don't have an account?
+        <span (click)="toggleLogin()" class="text-blue-500 hover:underline cursor-pointer"
+          >Register here</span
+        >
+      </p>
+    </form>
+  } @else {
+    <form class="flex flex-col items-center p-10 m-5 rounded-2xl shadow-2xl">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" />
+      </mat-form-field>
+
+      <button class="w-20" mat-flat-button="filled">Login</button>
+      <p class="mt-4 text-center text-sm text-gray-600">
+        Don't have an account?
+        <span (click)="toggleLogin()" class="text-blue-500 hover:underline cursor-pointer"
+          >Login here</span
+        >
+      </p>
+    </form>
+  }
+</div>

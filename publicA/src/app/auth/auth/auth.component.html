@@ -1,0 +1,55 @@
+<div class="h-screen flex justify-center items-center">
+  @if (isLogin) {
+    <form [formGroup]="signInUser" (submit)="signIn()" class="flex flex-col items-center p-10 m-5 w-100 rounded-2xl shadow-2xl">
+      <mat-form-field  class="w-full ">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName='email' />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName='password' />
+      </mat-form-field>
+
+      <button class="w-25" mat-flat-button="filled" type="submit">Sign In</button>
+
+      <p class="mt-4 text-center text-sm text-gray-600">
+        Don't have an account?
+        <span (click)="toggleLogin()" class="text-blue-500 hover:underline cursor-pointer"
+          >Sign Up here</span
+        >
+      </p>
+    </form>
+  } @else {
+    <form [formGroup]="signUpUser" (submit)="signUp()" class="flex flex-col items-center p-10 m-5 w-100 rounded-2xl shadow-2xl">
+      <mat-form-field class="w-full">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Repeat Password</mat-label>
+        <input matInput type="password" formControlName="repeatPassword"/>
+      </mat-form-field>
+
+      <button class="w-25" mat-flat-button="filled" type="submit">Sign up</button>
+
+      <p class="mt-4 text-center text-sm text-gray-600">
+        Don't have an account?
+        <span (click)="toggleLogin()" class="text-blue-500 hover:underline cursor-pointer"
+          >Sign In here</span
+        >
+      </p>
+    </form>
+  }
+</div>
