@@ -32,11 +32,11 @@ export class MainComponent {
     },
     {
       name: 'Expenses',
-      link: 'expenses',
+      link: 'expense',
     },
     {
       name: 'Wishes',
-      link: 'wishes',
+      link: 'wish',
     },
     {
       name: 'Currency',

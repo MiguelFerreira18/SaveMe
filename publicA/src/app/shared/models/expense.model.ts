@@ -6,4 +6,13 @@ export interface Expense {
   amount: number;
   userId: string;
   date: Date;
+  formattedDate?: string;
+}
+
+export interface CreateExpenseDto {
+  currencyId: number;
+  categoryId: number;
+  amount: number;
+  description: string;
+  date: string;
 }
