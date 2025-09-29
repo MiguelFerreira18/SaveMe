@@ -6,6 +6,8 @@ import { MainComponent } from './main/main.component';
 import { CurrenciesComponent } from './currencies/currencies.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { IncomeComponent } from './income/income.component';
+import { WishService } from './wish.service';
+import { WishComponent } from './wish/wish.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +42,12 @@ export const routes: Routes = [
         path: 'income',
         component: IncomeComponent,
         title: 'Income Page',
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'wish',
+        component: WishComponent,
+        title: 'Wish Page',
         canActivate: [AuthGuardService],
       },
     ],
