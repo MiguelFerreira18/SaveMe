@@ -12,7 +12,6 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
 import { AddExpenseDialogComponent } from './add-expense-dialog/add-expense-dialog.component';
 
-//TODO: Add DIALOG TO ADD A NEW Expense
 @Component({
   selector: 'app-expenses',
   imports: [

@@ -1,19 +1,30 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Currency } from '../shared/models/currency.model';
 import { Category } from '../shared/models/category.model';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddIncomeDialogComponent } from './add-income-dialog/add-income-dialog.component';
 import { CurrenciesService } from '../currencies.service';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
-import { TableColumn } from '../shared/data-table/data-table.component';
-import { Income } from '../shared/models/income.model';
+import { DataTableComponent, TableColumn } from '../shared/data-table/data-table.component';
+import { CreateIncomeDto, Income } from '../shared/models/income.model';
 import { IncomeService } from '../income.service';
 import { ToastService } from '../shared/toast.service';
+import { MatIcon } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
 
 @Component({
   selector: 'app-income',
-  imports: [],
+  imports: [
+    DataTableComponent,
+    MatIcon,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatProgressSpinner,
+    ErrorDisplayComponent,
+  ],
   templateUrl: './income.component.html',
   styleUrl: './income.component.css',
 })
@@ -34,7 +45,8 @@ export class IncomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.loadIncomes();
+    this.setupSearchFilter();
   }
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -61,7 +73,7 @@ export class IncomeComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(result);
+        this.createIncome(result);
       }
     });
   }
@@ -88,6 +100,19 @@ export class IncomeComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+  private createIncome(income: CreateIncomeDto) {
+    this.incomeService.postIncome(income).subscribe({
+      next: (data) => {
+        this.toast.show(`Income ${data.description} created successfully`, 'success', 3000);
+        this.loadIncomes();
+      },
+      error: (_) => {
+        this.toast.show('Error creating expense', 'error', 5000);
+      },
+    });
+  }
+
   private formatDateFromIncome(incomes: Income[]): Income[] {
     return incomes.map((income) => ({
       ...income,

@@ -72,7 +72,6 @@ export class AddExpenseDialogComponent implements OnInit {
       expenseValue.date = `${year}-${month}-${day}`;
     }
 
-    console.log('Final expenseValue.date:', expenseValue.date);
     this.dialogRef.close(expenseValue);
   }
 
