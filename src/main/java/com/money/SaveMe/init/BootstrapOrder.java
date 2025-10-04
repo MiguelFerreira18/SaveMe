@@ -1,11 +1,12 @@
 package com.money.SaveMe.init;
 
 public class BootstrapOrder {
-    public static final int AUTHORITIES = 1;
-    public static final int USERS = 2;
-    public static final int CURRENCIES = 3;
-    public static final int CATEGORIES = 4;
-    public static final int INCOMES = 5;
-    public static final int WISHES = 6;
-    public static final int EXPENSES = 7;
+    public static final int AUTHORITIES = 10;
+    public static final int USERS = 20;
+    public static final int CURRENCIES = 30;
+    public static final int CATEGORIES = 40;
+    public static final int STRATEGY_TYPES = 50;
+    public static final int INCOMES = 60;
+    public static final int WISHES = 70;
+    public static final int EXPENSES = 80;
 }

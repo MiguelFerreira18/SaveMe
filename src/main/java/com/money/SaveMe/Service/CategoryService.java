@@ -26,7 +26,7 @@ public class CategoryService {
 
     public Category getCategoryById(Long id){
         String userUUID = authenticationServiceUtil.getCurrentUserUuid();
-        return categoryRepo.findById(id)
+        return categoryRepo.findCategoryByIdAndUserId(id, userUUID)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id + " for user: " + userUUID));
 
     }
