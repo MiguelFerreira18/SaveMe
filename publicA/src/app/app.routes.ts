@@ -8,6 +8,7 @@ import { ExpensesComponent } from './expenses/expenses.component';
 import { IncomeComponent } from './income/income.component';
 import { WishComponent } from './wish/wish.component';
 import { StrategyTypeComponent } from './strategy-type/strategy-type.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,12 @@ export const routes: Routes = [
         path: 'wish',
         component: WishComponent,
         title: 'Wish Page',
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        title: 'dashboard Page',
         canActivate: [AuthGuardService],
       },
     ],
