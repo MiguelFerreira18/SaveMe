@@ -5,7 +5,6 @@ export interface Currency {
 }
 
 export interface CreateCurrencyDto {
-  id: number;
   name: string;
   symbol: string;
 }

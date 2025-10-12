@@ -9,6 +9,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-add-category-dialog',
@@ -21,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   templateUrl: './add-category-dialog.component.html',
   styleUrl: './add-category-dialog.component.css',
+  providers: [provideNativeDateAdapter()],
 })
 export class AddCategoryDialogComponent {
   category = new FormGroup({

@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Add Strategy Type</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="strategyType" class="p-2">
+    <mat-form-field class="w-full">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Description</mat-label>
+      <input type="text" matInput formControlName="description"
+    /></mat-form-field>
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button type="submit" mat-raised-button (click)="submit()" [disabled]="strategyType.invalid">
+        Save
+      </button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

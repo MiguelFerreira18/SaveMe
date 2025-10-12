@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Currency } from '../../shared/models/currency.model';
-import { CurrenciesService } from '../../currencies.service';
+import { CurrenciesService } from '../../currencies/currencies.service';
 
 @Component({
   selector: 'app-add-wish-dialog',

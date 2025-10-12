@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { CategoriesService } from '../../categories/categories.service';
-import { CurrenciesService } from '../../currencies.service';
+import { CurrenciesService } from '../../currencies/currencies.service';
 import { Currency } from '../../shared/models/currency.model';
 import { Category } from '../../shared/models/category.model';
 import { Subject } from 'rxjs';

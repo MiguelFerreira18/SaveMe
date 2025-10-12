@@ -2,18 +2,19 @@ import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 import { Category, CreateCategoryDto } from '../shared/models/category.model';
 import { DataTableComponent, TableColumn } from '../shared/data-table/data-table.component';
 import { MatIcon } from '@angular/material/icon';
-import { CategoriesService } from './categories.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { AddCategoryDialogComponent } from './add-category-dialog/add-category-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
 import { ToastService } from '../shared/toast.service';
+import { CreateStrategyTypeDto, StrategyType } from '../shared/models/strategy-type.model';
+import { AddStrategyTypeDialogComponent } from './add-strategy-type-dialog/add-strategy-type-dialog.component';
+import { StrategyTypeService } from './strategy-type.service';
 
 @Component({
-  selector: 'app-categories',
+  selector: 'app-strategy-type',
   imports: [
     DataTableComponent,
     MatIcon,
@@ -22,72 +23,71 @@ import { ToastService } from '../shared/toast.service';
     MatProgressSpinnerModule,
     ErrorDisplayComponent,
   ],
-  templateUrl: './categories.component.html',
-  styleUrl: './categories.component.css',
+  templateUrl: './strategy-type.component.html',
+  styleUrl: './strategy-type.component.css',
 })
-export class CategoriesComponent implements OnInit, OnDestroy {
+export class StrategyTypeComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
-  columns: TableColumn<Category>[] = [
+  columns: TableColumn<StrategyType>[] = [
     { header: 'ID', field: 'id' },
     { header: 'Name', field: 'name' },
     { header: 'description', field: 'description' },
   ];
 
-  readonly allCategories = signal<Category[]>([]);
-  categories = signal<Category[]>([]);
+  readonly allStrategyTypes = signal<StrategyType[]>([]);
+  strategyTypes = signal<StrategyType[]>([]);
   isLoading = signal<boolean>(true);
   hasErrorLoading = signal<boolean>(false);
 
   searchControl = new FormControl('');
 
   constructor(
-    private categoryService: CategoriesService,
+    private strategyService: StrategyTypeService,
     private dialog: MatDialog,
     private toast: ToastService
   ) {}
 
-  ngOnInit() {
-    this.loadCategories();
+  ngOnInit(): void {
+    this.loadStrategyTypes();
     this.setupSearchFilter();
   }
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
   clearFilter(): void {
-    this.categories.set(this.allCategories());
+    this.strategyTypes.set(this.allStrategyTypes());
     this.searchControl.setValue('', { emitEvent: false });
   }
 
-  openAddCategoryDialog() {
-    const dialogRef = this.dialog.open(AddCategoryDialogComponent, {
+  openAddStrategyTypeDialog() {
+    const dialogRef = this.dialog.open(AddStrategyTypeDialogComponent, {
       width: '400px',
       disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.createCategory(result);
+        this.createStrategyType(result);
       }
     });
   }
 
-  private loadCategories(retryCount: number = 0, maxRetries: number = 3) {
-    this.categoryService.getCategories().subscribe({
+  private loadStrategyTypes(retryCount: number = 0, maxRetries: number = 3) {
+    this.strategyService.getStrategyTypes().subscribe({
       next: (data) => {
-        this.allCategories.set(data);
-        this.categories.set(data);
+        this.allStrategyTypes.set(data);
+        this.strategyTypes.set(data);
         this.isLoading.set(false);
-        this.toast.show(`All Categories were loaded successfully`, 'success', 3000);
+        this.toast.show(`All strategies were loaded successfully`, 'success', 3000);
       },
       error: (_) => {
         this.hasErrorLoading.set(true);
         if (retryCount < maxRetries) {
           const delay = 5000 * Math.pow(2, retryCount);
           setTimeout(() => {
-            this.loadCategories(retryCount + 1, maxRetries);
+            this.loadStrategyTypes(retryCount + 1, maxRetries);
           }, delay);
         } else {
           this.isLoading.set(false);
@@ -97,11 +97,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private createCategory(category: CreateCategoryDto) {
-    this.categoryService.postCategory(category).subscribe({
+  private createStrategyType(strategy: CreateStrategyTypeDto) {
+    this.strategyService.postStrategyType(strategy).subscribe({
       next: (data) => {
-        this.toast.show(`Category ${data.name} created successfully`, 'success');
-        this.loadCategories();
+        this.toast.show(`Strategy ${data.name} created successfully`, 'success');
+        this.loadStrategyTypes();
       },
       error: (_) => this.toast.show('Error creating category', 'error', 5000),
     });
@@ -110,10 +110,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private setupSearchFilter() {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => this.filterCategories());
+      .subscribe(() => this.filterStrategies());
   }
 
-  private filterCategories(): void {
+  private filterStrategies(): void {
     const searchTerm = this.searchControl.value;
     if (
       searchTerm === null ||
@@ -121,15 +121,15 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       searchTerm === '' ||
       searchTerm.trim() === ''
     ) {
-      this.categories.set(this.allCategories());
+      this.strategyTypes.set(this.allStrategyTypes());
       return;
     }
 
-    const filtered = this.allCategories().filter(
+    const filtered = this.allStrategyTypes().filter(
       (category) =>
         category.name.toLowerCase().includes(searchTerm.trim().toLowerCase()) ||
         category.description?.toLowerCase().includes(searchTerm.trim().toLowerCase())
     );
-    this.categories.set(filtered);
+    this.strategyTypes.set(filtered);
   }
 }

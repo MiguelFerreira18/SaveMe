@@ -2,13 +2,13 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Currency } from '../../shared/models/currency.model';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { CurrenciesService } from '../../currencies.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { CurrenciesService } from '../../currencies/currencies.service';
 
 @Component({
   selector: 'app-add-income-dialog',
@@ -75,7 +75,7 @@ export class AddIncomeDialogComponent implements OnInit {
       next: (currencies) => {
         this.currencies.set(currencies);
       },
-      error: (err) => console.log(err), //TODO: ADD a LOADING SPINNER
+      error: (_) => {}, //TODO: ADD a LOADING SPINNER
     });
   }
 }

@@ -47,6 +47,10 @@ export class MainComponent {
       link: 'category',
     },
     {
+      name: 'Strategy types',
+      link: 'strategy-type',
+    },
+    {
       name: 'Login',
       link: 'login',
     },

@@ -6,8 +6,8 @@ import { MainComponent } from './main/main.component';
 import { CurrenciesComponent } from './currencies/currencies.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { IncomeComponent } from './income/income.component';
-import { WishService } from './wish.service';
 import { WishComponent } from './wish/wish.component';
+import { StrategyTypeComponent } from './strategy-type/strategy-type.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +30,12 @@ export const routes: Routes = [
         path: 'currency',
         component: CurrenciesComponent,
         title: 'Currency Page',
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'strategy-type',
+        component: StrategyTypeComponent,
+        title: 'Strategy Type Page',
         canActivate: [AuthGuardService],
       },
       {

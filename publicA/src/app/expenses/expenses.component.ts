@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { debounceTime, distinctUntilChanged, max, Subject, takeUntil } from 'rxjs';
 import { DataTableComponent, TableColumn } from '../shared/data-table/data-table.component';
 import { CreateExpenseDto, Expense } from '../shared/models/expense.model';
-import { ExpensesService } from '../expenses.service';
+import { ExpensesService } from './expenses.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../shared/toast.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';

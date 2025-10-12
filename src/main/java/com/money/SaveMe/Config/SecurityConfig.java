@@ -92,6 +92,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/wish/**").authenticated()
                                 .requestMatchers("/api/currency/**").authenticated()
                                 .requestMatchers("/api/category/**").authenticated()
+                                .requestMatchers("/api/strategy-type/**").authenticated()
                                 .requestMatchers("/auth/public/signup").permitAll()
                                 .requestMatchers("/auth/public/login").permitAll()
                                 .requestMatchers("/auth/public/status").permitAll()

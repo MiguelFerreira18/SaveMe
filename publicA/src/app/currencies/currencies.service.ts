@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateCurrencyDto, Currency } from './shared/models/currency.model';
-import { environment } from '../environments/environment';
+import { CreateCurrencyDto, Currency } from '../shared/models/currency.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

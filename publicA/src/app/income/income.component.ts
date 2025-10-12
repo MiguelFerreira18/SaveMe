@@ -4,16 +4,15 @@ import { Category } from '../shared/models/category.model';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddIncomeDialogComponent } from './add-income-dialog/add-income-dialog.component';
-import { CurrenciesService } from '../currencies.service';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { DataTableComponent, TableColumn } from '../shared/data-table/data-table.component';
 import { CreateIncomeDto, Income } from '../shared/models/income.model';
-import { IncomeService } from '../income.service';
 import { ToastService } from '../shared/toast.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
+import { IncomeService } from './income.service';
 
 @Component({
   selector: 'app-income',

@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateWishDto, Wish } from './shared/models/wish.model';
+import { environment } from '../../environments/environment';
+import { CreateWishDto, Wish } from '../shared/models/wish.model';
 
 @Injectable({
   providedIn: 'root',

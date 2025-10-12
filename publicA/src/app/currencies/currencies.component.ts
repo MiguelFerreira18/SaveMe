@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
-import { CurrenciesService } from '../currencies.service';
+import { CurrenciesService } from './currencies.service';
 import { debounce, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { DataTableComponent, TableColumn } from '../shared/data-table/data-table.component';
 import { CreateCurrencyDto, Currency } from '../shared/models/currency.model';

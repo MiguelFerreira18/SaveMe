@@ -6,7 +6,7 @@ import { MatProgressSpinner, MatProgressSpinnerModule } from '@angular/material/
 import { ErrorDisplayComponent } from '../shared/error-display/error-display.component';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { CreateWishDto, Wish } from '../shared/models/wish.model';
-import { WishService } from '../wish.service';
+import { WishService } from './wish.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../shared/toast.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
