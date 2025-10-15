@@ -1,1 +1,25 @@
-<p>dashboard works!</p>
+<h1 class="text-2xl font-bold">Dashboard</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <app-dashboard-dynamic-table
+    [data]="expenses()"
+    [columns]="expenseColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="incomes()"
+    [columns]="incomeColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="wishes()"
+    [columns]="wishColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+</div>
