@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   effect,
   OnChanges,
   OnDestroy,
@@ -85,6 +86,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   incomes = signal<Income[]>([]);
   wishes = signal<Wish[]>([]);
   expenses = signal<Expense[]>([]);
+
+  totalIncome = computed(() => this.incomes().reduce((acc, i) => acc + i.amount, 0));
+  totalWishes = computed(() => this.wishes().reduce((acc, w) => acc + w.amount, 0));
+  totalExpenses = computed(() => this.expenses().reduce((acc, e) => acc + e.amount, 0));
 
   displaySymbol(currency: Currency): string {
     return currency.symbol;

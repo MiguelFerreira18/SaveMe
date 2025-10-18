@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, Signal, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 
@@ -18,8 +18,10 @@ export interface TableColumn {
 export class DashboardDynamicTableComponent {
   @ViewChild('paginator') paginator!: MatPaginator;
 
-  @Input() data: any[] = [];
-  @Input() columns: TableColumn[] = [];
+  @Input({ required: true }) data: any[] = [];
+  @Input() total!: Signal<number>;
+  @Input()
+  columns: TableColumn[] = [];
   @Input() minRows: number = 10;
   @Input() pageSize: number = 10;
 

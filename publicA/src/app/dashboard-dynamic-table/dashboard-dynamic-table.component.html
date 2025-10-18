@@ -17,11 +17,31 @@
                 [class.!text-center]="column.align === 'center'">
               {{ element[column.key] || '' }}
             </td>
+
+          @if(total() && total() != 0){
+              <td mat-footer-cell *matFooterCellDef
+              class="!px-4 !py-3 !text-sm !font-semibold !bg-gray-50 !border-t !border-gray-200"
+              [class.!text-left]="column.align === 'left' || !column.align"
+              [class.!text-right]="column.align === 'right'"
+              [class.!text-center]="column.align === 'center'">
+
+                <ng-container *ngIf="column.key === columns[0].key; else valueCell">
+                  Total:
+                </ng-container>
+                <ng-template #valueCell>
+                  {{total() | number: '1.2-2'}}
+                </ng-template>
+
+              </td>
+            }
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"
               class="hover:bg-gray-50 transition-colors"></tr>
+          @if(total() && total() != 0){
+            <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+          }
         </table>
       </div>
 
