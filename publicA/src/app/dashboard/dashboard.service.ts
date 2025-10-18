@@ -5,6 +5,7 @@ import { map, Observable, of, catchError } from 'rxjs';
 import { Expense } from '../shared/models/expense.model';
 import { Income } from '../shared/models/income.model';
 import { Wish } from '../shared/models/wish.model';
+import { Currency } from '../shared/models/currency.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class DashboardService {
   private readonly expenseUri = 'expense';
   private readonly incomeUri = 'income';
   private readonly wishesUri = 'wish';
+  private readonly currenciesUri = 'currency';
   private readonly http = inject(HttpClient);
 
   constructor() {}
@@ -98,6 +100,12 @@ export class DashboardService {
           return of([]);
         })
       );
+  }
+
+  getCurrencies(): Observable<Currency[]> {
+    return this.http.get<Currency[]>(`${this.apiUrl}/${this.currenciesUri}/all`, {
+      withCredentials: true,
+    });
   }
 
   private getExpenses(): Observable<Expense[]> {

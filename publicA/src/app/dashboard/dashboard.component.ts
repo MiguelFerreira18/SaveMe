@@ -1,6 +1,14 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { DashboardService } from './dashboard.service';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { Income } from '../shared/models/income.model';
 import { Wish } from '../shared/models/wish.model';
 import { Expense } from '../shared/models/expense.model';
@@ -13,6 +21,8 @@ import {
   DashboardDynamicTableComponent,
   TableColumn,
 } from '../dashboard-dynamic-table/dashboard-dynamic-table.component';
+import { GenericDropdownFilterComponent } from '../shared/generic-dropdown-filter/generic-dropdown-filter.component';
+import { createEmptyCurrency, Currency } from '../shared/models/currency.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +33,7 @@ import {
     MatProgressSpinner,
     ErrorDisplayComponent,
     DashboardDynamicTableComponent,
+    GenericDropdownFilterComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -42,9 +53,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { key: 'amount', header: 'Amount', align: 'right' },
   ];
 
-  constructor(private dasboardService: DashboardService) {}
+  constructor(private dasboardService: DashboardService) {
+    effect(() => {
+      const symbol = this.selectedSymbol().symbol;
+      this.applyFilters(symbol);
+    });
+  }
 
   ngOnInit(): void {
+    this.loadCurrencies();
     this.loadExpenses();
     this.loadIncome();
     this.loadWishes();
@@ -55,6 +72,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  private loadedCount = 0;
+  private readonly TOTAL_LOADS = 4; //INFO: AT LEAST FOR NOW THERE ARE 4
+
+  selectedSymbol = signal<Currency>(createEmptyCurrency());
+  symbolsFilter = signal<Currency[]>([]);
+
   private readonly allIncomes = signal<Income[]>([]);
   private readonly allWishes = signal<Wish[]>([]);
   private readonly allExpenses = signal<Expense[]>([]);
@@ -62,6 +85,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   incomes = signal<Income[]>([]);
   wishes = signal<Wish[]>([]);
   expenses = signal<Expense[]>([]);
+
+  displaySymbol(currency: Currency): string {
+    return currency.symbol;
+  }
 
   private loadExpenses() {
     this.dasboardService.reducedExpenses().subscribe({
@@ -72,6 +99,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         this.allExpenses.set(roundedExpenses);
         this.expenses.set(roundedExpenses);
+        this.checkAllLoads();
       },
       error: (err) => {
         console.error(err);
@@ -90,6 +118,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         this.allIncomes.set(roundedIncomes);
         this.incomes.set(roundedIncomes);
+        this.checkAllLoads();
       },
       error: (err) => {
         console.error(err);
@@ -106,10 +135,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         this.allWishes.set(roundedWishes);
         this.wishes.set(roundedWishes);
+        this.checkAllLoads();
       },
       error: (err) => {
         console.error(err);
       },
     });
+  }
+
+  private loadCurrencies() {
+    this.dasboardService.getCurrencies().subscribe({
+      next: (currencies) => {
+        this.symbolsFilter.set(currencies);
+        if (currencies.length !== 0) {
+          this.checkAllLoads();
+          this.selectedSymbol.set(currencies[0]);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  private checkAllLoads() {
+    this.loadedCount++;
+    if (this.loadedCount >= this.TOTAL_LOADS) {
+      this.applyFilters(this.selectedSymbol().symbol);
+    }
+  }
+
+  private applyFilters(symbol: string) {
+    this.expenses.set(this.allExpenses().filter((e) => e.symbol == symbol));
+    this.incomes.set(this.allIncomes().filter((i) => i.symbol == symbol));
+    this.wishes.set(this.allWishes().filter((w) => w.symbol == symbol));
   }
 }
