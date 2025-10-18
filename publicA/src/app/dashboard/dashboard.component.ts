@@ -66,8 +66,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private loadExpenses() {
     this.dasboardService.reducedExpenses().subscribe({
       next: (expenses) => {
-        this.allExpenses.set(expenses); //TODO: LOAD TABLE INSTEAD OF PRINTING DATA
-        this.expenses.set(expenses);
+        const roundedExpenses = expenses.map((e) => {
+          e['amount'] = Number(e.amount.toFixed(2));
+          return e;
+        });
+        this.allExpenses.set(roundedExpenses);
+        this.expenses.set(roundedExpenses);
       },
       error: (err) => {
         console.error(err);
@@ -77,8 +81,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private loadIncome() {
     this.dasboardService.getIncomes().subscribe({
       next: (incomes) => {
-        this.allIncomes.set(incomes);
-        this.incomes.set(incomes);
+        console.log(incomes);
+
+        const roundedIncomes = incomes.map((i) => {
+          i['amount'] = Number(i.amount.toFixed(2));
+          return i;
+        });
+
+        this.allIncomes.set(roundedIncomes);
+        this.incomes.set(roundedIncomes);
       },
       error: (err) => {
         console.error(err);
@@ -89,8 +100,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private loadWishes() {
     this.dasboardService.getWishes().subscribe({
       next: (wishes) => {
-        this.allWishes.set(wishes);
-        this.wishes.set(wishes);
+        const roundedWishes = wishes.map((w) => {
+          w['amount'] = Number(w.amount.toFixed(2));
+          return w;
+        });
+        this.allWishes.set(roundedWishes);
+        this.wishes.set(roundedWishes);
       },
       error: (err) => {
         console.error(err);
