@@ -7,38 +7,38 @@
   [data]="symbolsFilter()"
   [displayFn]="displaySymbol"
 ></app-generic-dropdown-filter>
-<div class="p-4 bg-white shadow-sm rounded rounded-l-lg">
-  <app-pie-chart [pieChartData]="pieChartData()"></app-pie-chart>
+<div class="grid grid-cols-5 gap-4 p-6 bg-white shadow-sm rounded rounded-l-lg">
+  <div class="col-span-2 flex items-center justify-center rounded-lg">
+    <app-budget-table></app-budget-table>
+  </div>
+  <app-pie-chart
+    class="col-span-3 flex items-center rounded-lg"
+    [pieChartData]="pieChartData()"
+  ></app-pie-chart>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="expenses()"
-      [total]="totalExpenses"
-      [columns]="expenseColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
-  </div>
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="incomes()"
-      [total]="totalIncome"
-      [columns]="incomeColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
-  </div>
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="wishes()"
-      [total]="totalWishes"
-      [columns]="wishColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
-  </div>
+  <app-dashboard-dynamic-table
+    [data]="expenses()"
+    [total]="totalExpenses"
+    [columns]="expenseColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="incomes()"
+    [total]="totalIncome"
+    [columns]="incomeColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="wishes()"
+    [total]="totalWishes"
+    [columns]="wishColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
 </div>

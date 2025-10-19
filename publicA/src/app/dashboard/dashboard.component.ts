@@ -25,6 +25,7 @@ import {
 import { GenericDropdownFilterComponent } from '../shared/generic-dropdown-filter/generic-dropdown-filter.component';
 import { createEmptyCurrency, Currency } from '../shared/models/currency.model';
 import { PieChartComponent, PieChartData } from '../shared/pie-chart/pie-chart.component';
+import { BudgetTableComponent } from '../budget-table/budget-table.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,6 +38,7 @@ import { PieChartComponent, PieChartData } from '../shared/pie-chart/pie-chart.c
     DashboardDynamicTableComponent,
     GenericDropdownFilterComponent,
     PieChartComponent,
+    BudgetTableComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
