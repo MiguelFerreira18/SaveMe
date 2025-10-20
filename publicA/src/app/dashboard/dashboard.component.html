@@ -7,12 +7,12 @@
   [data]="symbolsFilter()"
   [displayFn]="displaySymbol"
 ></app-generic-dropdown-filter>
-<div class="grid grid-cols-5 gap-4 p-6 bg-white shadow-sm rounded rounded-l-lg">
-  <div class="col-span-2 flex items-center justify-center rounded-lg">
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 py-3">
+  <div class="col-span-3 bg-white items-center shadow-sm rounded rounded-lg">
     <app-budget-table></app-budget-table>
   </div>
   <app-pie-chart
-    class="col-span-3 flex items-center rounded-lg"
+    class="col-span-2 flex bg-white items-center shadow-sm rounded-lg"
     [pieChartData]="pieChartData()"
   ></app-pie-chart>
 </div>

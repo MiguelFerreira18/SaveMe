@@ -1,11 +1,7 @@
 <div class="p-6">
   <h2 class="text-xl font-semibold mb-4">Monthly Budget Allocation</h2>
 
-  <table
-    mat-table
-    [dataSource]="data"
-    class="min-w-full border border-gray-200 rounded-lg overflow-hidden"
-  >
+  <table mat-table [dataSource]="data" class="bg-white rounded-lg shadow-sm border border-gray-200">
     <ng-container matColumnDef="category">
       <th
         mat-header-cell

@@ -40,6 +40,16 @@ export class PieChartComponent {
       },
       tooltip: {
         enabled: true,
+        callbacks: {
+          label: function (tooltipItem) {
+            const data = tooltipItem.chart.data.datasets[tooltipItem.datasetIndex].data as number[];
+            const total = data.reduce((acc, value) => acc + value, 0);
+            const currentValue = data[tooltipItem.dataIndex];
+            const percentage = ((currentValue / total) * 100).toFixed(2);
+            const label = tooltipItem.chart.data.labels?.[tooltipItem.dataIndex] || '';
+            return `${label}: ${percentage}%`;
+          },
+        },
       },
     },
   };
