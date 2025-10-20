@@ -1,28 +1,87 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, effect, Input, OnInit, Signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 
 interface BudgetData {
   category: string;
-  ideal: string;
-  goal: string;
-  actual: string;
+  ideal: number;
+  goal: number;
+  actual: number;
+  spent: number;
+}
+interface FooterData {
+  category: string;
   spent: number;
 }
 
 @Component({
   selector: 'app-budget-table',
-  imports: [CommonModule, MatTableModule, MatPaginatorModule],
+  imports: [CommonModule, MatTableModule, MatPaginatorModule, MatInputModule, FormsModule],
   templateUrl: './budget-table.component.html',
   styleUrl: './budget-table.component.css',
 })
-export class BudgetTableComponent {
+export class BudgetTableComponent implements OnInit {
+  @Input({ required: true }) totalIncome!: Signal<number>;
+  @Input({ required: true }) totalWish!: Signal<number>;
+  @Input({ required: true }) totalExpense!: Signal<number>;
+
+  totalSpent = computed(() => {
+    return this.totalExpense() + this.totalWish(); //TODO: ADD INVESTMENTS LATER
+  });
+
   displayedColumns: string[] = ['category', 'ideal', 'goal', 'actual', 'spent'];
 
-  data: BudgetData[] = [
-    { category: 'FUNDAMENTALS', ideal: '$1,400.00', goal: '50%', actual: '59%', spent: 1640 },
-    { category: 'FUTURE YOU', ideal: '$560.00', goal: '20%', actual: '11%', spent: 320 },
-    { category: 'FUN', ideal: '$840.00', goal: '30%', actual: '30%', spent: 840 },
-  ];
+  data: BudgetData[] = [];
+  footerData: FooterData[] = [];
+
+  constructor() {
+    effect(() => {
+      this.updateTableData();
+    });
+  }
+  ngOnInit(): void {
+    this.updateTableData();
+  }
+
+  private updateTableData() {
+    this.data = [
+      {
+        category: 'FUNDAMENTALS',
+        ideal: 0,
+        goal: 50,
+        actual: Number((this.totalExpense() / this.totalIncome()) * 100),
+        spent: this.totalExpense(),
+      },
+      {
+        category: 'FUTURE YOU',
+        ideal: 0,
+        goal: 20,
+        actual: Number((20 / this.totalIncome()) * 100), // TODO: CHANGE THIS LATER FOR THE ACTUAL INVESTMENT
+        spent: 29292,
+      },
+      {
+        category: 'FUN',
+        ideal: 0,
+        goal: 30,
+        actual: Number((this.totalWish() / this.totalIncome()) * 100),
+        spent: this.totalWish(),
+      },
+    ];
+    const difference = Math.abs(this.totalIncome() - this.totalSpent());
+    const isEqual = difference < 0.01;
+    this.footerData = [
+      {
+        category: isEqual
+          ? "Great, you've allocated all of your income for the month"
+          : this.totalSpent() > this.totalIncome()
+            ? "Woops, you've allocated MORE than your income by"
+            : "You haven't allocated all of your income, the amount left is:",
+        spent: this.totalIncome() - this.totalSpent(), //TODO: ADD LATER THE INVESTMENT
+      },
+    ];
+  }
 }
+``;

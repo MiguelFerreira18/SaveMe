@@ -18,7 +18,6 @@
               {{ element[column.key] || '' }}
             </td>
 
-          @if(total()){
               <td mat-footer-cell *matFooterCellDef
               class="!px-4 !py-3 !text-sm !font-semibold !bg-gray-50 !border-t !border-gray-200"
               [class.!text-left]="column.align === 'left' || !column.align"
@@ -33,15 +32,12 @@
                 </ng-template>
 
               </td>
-            }
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"
               class="hover:bg-gray-50 transition-colors"></tr>
-          @if(total() ){
             <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
-          }
         </table>
       </div>
 

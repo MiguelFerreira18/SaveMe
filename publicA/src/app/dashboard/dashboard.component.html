@@ -8,11 +8,14 @@
   [displayFn]="displaySymbol"
 ></app-generic-dropdown-filter>
 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 py-3">
-  <div class="col-span-3 bg-white items-center shadow-sm rounded rounded-lg">
-    <app-budget-table></app-budget-table>
-  </div>
+  <app-budget-table
+    [totalExpense]="totalExpenses"
+    [totalIncome]="totalIncome"
+    [totalWish]="totalWishes"
+    class="col-span-3 bg-white items-center flex justify-center shadow-sm rounded-lg p-5"
+  ></app-budget-table>
   <app-pie-chart
-    class="col-span-2 flex bg-white items-center shadow-sm rounded-lg"
+    class="col-span-2 flex bg-white items-center shadow-sm rounded-lg p-3"
     [pieChartData]="pieChartData()"
   ></app-pie-chart>
 </div>

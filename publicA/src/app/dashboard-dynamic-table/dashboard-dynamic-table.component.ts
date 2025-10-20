@@ -20,8 +20,7 @@ export class DashboardDynamicTableComponent {
 
   @Input({ required: true }) data: any[] = [];
   @Input() total!: Signal<number>;
-  @Input()
-  columns: TableColumn[] = [];
+  @Input() columns: TableColumn[] = [];
   @Input() minRows: number = 10;
   @Input() pageSize: number = 10;
 
