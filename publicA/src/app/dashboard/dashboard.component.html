@@ -1,42 +1,44 @@
 <h1 class="text-2xl font-bold">Dashboard</h1>
 <!-- Filters -->
-<div class="flex flex-row gap-2"></div>
+<div class="flex flex-row gap-2 py-4"></div>
 <!-- Filter by symbol  -->
 <app-generic-dropdown-filter
   [(selected)]="selectedSymbol"
   [data]="symbolsFilter()"
   [displayFn]="displaySymbol"
 ></app-generic-dropdown-filter>
-<div></div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="expenses()"
-      [total]="totalExpenses"
-      [columns]="expenseColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 py-3">
+  <div class="col-span-3 bg-white items-center shadow-sm rounded rounded-lg">
+    <app-budget-table></app-budget-table>
   </div>
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="incomes()"
-      [total]="totalIncome"
-      [columns]="incomeColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
-  </div>
-  <div>
-    <app-dashboard-dynamic-table
-      [data]="wishes()"
-      [total]="totalWishes"
-      [columns]="wishColumns"
-      [minRows]="12"
-      [pageSize]="12"
-    >
-    </app-dashboard-dynamic-table>
-  </div>
+  <app-pie-chart
+    class="col-span-2 flex bg-white items-center shadow-sm rounded-lg"
+    [pieChartData]="pieChartData()"
+  ></app-pie-chart>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+  <app-dashboard-dynamic-table
+    [data]="expenses()"
+    [total]="totalExpenses"
+    [columns]="expenseColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="incomes()"
+    [total]="totalIncome"
+    [columns]="incomeColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
+  <app-dashboard-dynamic-table
+    [data]="wishes()"
+    [total]="totalWishes"
+    [columns]="wishColumns"
+    [minRows]="12"
+    [pageSize]="12"
+  >
+  </app-dashboard-dynamic-table>
 </div>

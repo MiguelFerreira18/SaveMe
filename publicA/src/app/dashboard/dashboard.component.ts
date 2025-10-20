@@ -24,6 +24,8 @@ import {
 } from '../dashboard-dynamic-table/dashboard-dynamic-table.component';
 import { GenericDropdownFilterComponent } from '../shared/generic-dropdown-filter/generic-dropdown-filter.component';
 import { createEmptyCurrency, Currency } from '../shared/models/currency.model';
+import { PieChartComponent, PieChartData } from '../shared/pie-chart/pie-chart.component';
+import { BudgetTableComponent } from '../budget-table/budget-table.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +37,8 @@ import { createEmptyCurrency, Currency } from '../shared/models/currency.model';
     ErrorDisplayComponent,
     DashboardDynamicTableComponent,
     GenericDropdownFilterComponent,
+    PieChartComponent,
+    BudgetTableComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
@@ -93,6 +97,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   displaySymbol(currency: Currency): string {
     return currency.symbol;
+  }
+
+  pieChartData(): PieChartData {
+    return {
+      labels: ['Expense', 'Income', 'Wish'],
+      data: [this.totalExpenses(), this.totalIncome(), this.totalWishes()],
+    };
   }
 
   private loadExpenses() {
