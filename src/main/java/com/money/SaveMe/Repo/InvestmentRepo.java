@@ -2,6 +2,7 @@ package com.money.SaveMe.Repo;
 
 import com.money.SaveMe.Model.Income;
 import com.money.SaveMe.Model.Investment;
+import com.money.SaveMe.Model.StrategyType;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -23,7 +24,7 @@ public interface InvestmentRepo extends CrudRepository<Investment, Long> {
     public Optional<Investment> findByInvestmentIdAndUserId(Long id, String userUUID);
 
     @Query("SELECT i FROM Investment i WHERE i.user.id = ?1 AND i.strategyType.id = ?2 AND i.currency.id = ?3 AND i.amount = ?4")
-    public Optional<Investment> findInvestmentByAllparameters(String userId, Long currencyId, BigDecimal amount);
+    public Optional<Investment> findInvestmentByAllparameters(String userId, Long strategyTypeId, Long currencyId, BigDecimal amount);
 
     @Transactional
     @Modifying
