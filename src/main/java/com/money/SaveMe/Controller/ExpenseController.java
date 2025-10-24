@@ -110,7 +110,7 @@ public class ExpenseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
-        expenseService.deleteIncome(id);
+        expenseService.deleteExpense(id);
         return ResponseEntity.status(202).build();
     }
 }
