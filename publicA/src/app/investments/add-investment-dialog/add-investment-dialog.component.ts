@@ -10,6 +10,7 @@ import { Currency } from '../../shared/models/currency.model';
 import { StrategyType } from '../../shared/models/strategy-type.model';
 import { StrategyTypeService } from '../../strategy-type/strategy-type.service';
 import { CurrenciesService } from '../../currencies/currencies.service';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-add-investment-dialog',
@@ -24,6 +25,7 @@ import { CurrenciesService } from '../../currencies/currencies.service';
   ],
   templateUrl: './add-investment-dialog.component.html',
   styleUrl: './add-investment-dialog.component.css',
+  providers: [provideNativeDateAdapter()],
 })
 export class AddInvestmentDialogComponent implements OnInit {
   currencies = signal<Currency[]>([]);

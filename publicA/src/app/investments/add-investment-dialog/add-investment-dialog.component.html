@@ -20,7 +20,7 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field class="w-full">
-      <mat-label>Category</mat-label>
+      <mat-label>Strategy Type</mat-label>
       <mat-select formControlName="strategyTypeId">
         @for (strategyType of strategyTypes(); track strategyType.id) {
           <mat-option [value]="strategyType.id">{{ strategyType.name }}</mat-option>

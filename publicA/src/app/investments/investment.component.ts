@@ -41,7 +41,10 @@ export class InvestmentComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private toast: ToastService
   ) {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadInvestment();
+    this.setupSearchFilter();
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -66,6 +69,7 @@ export class InvestmentComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        this.createInvestment(result);
       }
     });
   }

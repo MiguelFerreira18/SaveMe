@@ -27,6 +27,10 @@ export class MainComponent {
       link: 'dashboard',
     },
     {
+      name: 'Investments',
+      link: 'investment',
+    },
+    {
       name: 'Income',
       link: 'income',
     },
