@@ -9,6 +9,7 @@ import { IncomeComponent } from './income/income.component';
 import { WishComponent } from './wish/wish.component';
 import { StrategyTypeComponent } from './strategy-type/strategy-type.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { InvestmentComponent } from './investments/investment.component';
 
 export const routes: Routes = [
   {
@@ -55,6 +56,12 @@ export const routes: Routes = [
         path: 'wish',
         component: WishComponent,
         title: 'Wish Page',
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'investment',
+        component: InvestmentComponent,
+        title: 'Investment Page',
         canActivate: [AuthGuardService],
       },
       {

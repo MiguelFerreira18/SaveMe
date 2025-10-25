@@ -77,7 +77,7 @@ public class ExpenseService {
         return expenseRepo.save(oldExpense);
     }
 
-    public void deleteIncome(Long id) {
+    public void deleteExpense(Long id) {
         String userId = authUtil.getCurrentUserUuid();
         expenseRepo.deleteExpenseByIdAndUserId(id, userId);
     }

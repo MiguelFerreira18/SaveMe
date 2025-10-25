@@ -6,6 +6,7 @@ import { Expense } from '../shared/models/expense.model';
 import { Income } from '../shared/models/income.model';
 import { Wish } from '../shared/models/wish.model';
 import { Currency } from '../shared/models/currency.model';
+import { Investment } from '../shared/models/investment.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ import { Currency } from '../shared/models/currency.model';
 export class DashboardService {
   private readonly apiUrl = `${environment.apiUrl}/api`;
   private readonly expenseUri = 'expense';
+  private readonly investmentUri = 'investment';
   private readonly incomeUri = 'income';
   private readonly wishesUri = 'wish';
   private readonly currenciesUri = 'currency';
@@ -43,6 +45,40 @@ export class DashboardService {
           } else {
             acc.push({
               ...expense,
+              description: '',
+            });
+          }
+
+          return acc;
+        }, []);
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of([]);
+      })
+    );
+  }
+  reducedInvestments(month: Date = new Date()): Observable<Investment[]> {
+    return this.getInvestments().pipe(
+      map((data: Investment[]) => {
+        const filteredData = data.filter((investment) => {
+          const investmentDate = new Date(investment.date);
+          return (
+            investmentDate.getMonth() === month.getMonth() &&
+            investmentDate.getFullYear() === month.getFullYear()
+          );
+        });
+
+        return filteredData.reduce<Investment[]>((acc, investment) => {
+          const existingInvestmentLocation = acc.findIndex(
+            (i) => i.strategyType === investment.strategyType && i.symbol === investment.symbol
+          );
+
+          if (existingInvestmentLocation !== -1) {
+            acc[existingInvestmentLocation].amount += investment.amount;
+          } else {
+            acc.push({
+              ...investment,
               description: '',
             });
           }
@@ -110,6 +146,11 @@ export class DashboardService {
 
   private getExpenses(): Observable<Expense[]> {
     return this.http.get<Expense[]>(`${this.apiUrl}/${this.expenseUri}/all`, {
+      withCredentials: true,
+    });
+  }
+  private getInvestments(): Observable<Investment[]> {
+    return this.http.get<Investment[]>(`${this.apiUrl}/${this.investmentUri}/all`, {
       withCredentials: true,
     });
   }

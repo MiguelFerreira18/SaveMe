@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/income/**").authenticated()
                                 .requestMatchers("/api/expense/**").authenticated()
                                 .requestMatchers("/api/wish/**").authenticated()
+                                .requestMatchers("/api/investment/**").authenticated()
                                 .requestMatchers("/api/currency/**").authenticated()
                                 .requestMatchers("/api/category/**").authenticated()
                                 .requestMatchers("/api/strategy-type/**").authenticated()
