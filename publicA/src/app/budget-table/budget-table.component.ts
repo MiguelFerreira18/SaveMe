@@ -30,10 +30,11 @@ export class BudgetTableComponent implements OnInit {
   @Input({ required: true }) totalInvestment!: Signal<number>;
 
   totalSpent = computed(() => {
-    return this.totalExpense() + this.totalWish() + this.totalInvestment(); //TODO: ADD INVESTMENTS LATER
+    return this.totalExpense() + this.totalWish() + this.totalInvestment();
   });
 
   displayedColumns: string[] = ['category', 'ideal', 'goal', 'actual', 'spent'];
+  emptyColumns: string[] = ['category', 'spent'];
 
   data: BudgetData[] = [];
   footerData: FooterData[] = [];
@@ -61,7 +62,7 @@ export class BudgetTableComponent implements OnInit {
         ideal: 0,
         goal: 20,
         actual: Number((20 / this.totalInvestment()) * 100),
-        spent: 29292,
+        spent: this.totalInvestment(),
       },
       {
         category: 'FUN',

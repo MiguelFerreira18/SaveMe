@@ -71,7 +71,7 @@ export class DashboardService {
 
         return filteredData.reduce<Investment[]>((acc, investment) => {
           const existingInvestmentLocation = acc.findIndex(
-            (e) => e.strategyType === investment.strategyType && e.symbol === investment.symbol
+            (i) => i.strategyType === investment.strategyType && i.symbol === investment.symbol
           );
 
           if (existingInvestmentLocation !== -1) {
