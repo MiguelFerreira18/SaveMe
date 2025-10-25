@@ -9,12 +9,15 @@ In this current day and age where economic uncertainty worries our minds, there 
 Syncronize data with banks
 
 ## Tooling
-- Docker
-- Jenkins
+
+#### CI/CD
+- Docker (Only the default Springboot docker package)
+- Jenkins (Not started yet)
+
 #### Front-End
-- Vue3
+- Angular 19
+- Angular Material UI
 - Tailwind 4
-- Vite 
 
 #### Back-End
 - Springboot 3.5.4
@@ -22,13 +25,22 @@ Syncronize data with banks
 - Flyway
 
 #### Testing
-- Playwright
+- Jasmine and Karma (Angular 19 defaults)
 - Junit
-- Vitest
 
 ## Features (Work in Progress)
 
 
+## How to run the project
+
+1. Clone it to your computer
+2. Have java 21 installed, either compile the java project into a jar with ```-DskipTests``` or just run the project on intelij (recommended)
+3. Run the dev profile on the springboot api
+4. Let the api create the docker container of mysql and insert all the bootstrap data
+5. Run ```bash ng serve``` inside publicA directory where the frontend is located
+6. Happy coding
+
+**Note:** The login credentials can be found at the bootsrap java files in ```src/main/java/com/money/SaveMe/init/UserBootstrap.java```
 
 
 ## Sources of Knowledge (Work in Progress)
