@@ -1,7 +1,5 @@
-<div class="p-6">
-  <h2 class="text-xl font-semibold mb-4">Monthly Budget Allocation</h2>
-
-  <table mat-table [dataSource]="data" class="bg-white rounded-lg shadow-sm border border-gray-200">
+<div>
+  <table mat-table [dataSource]="data" class="!bg-white rounded-lg">
     <ng-container matColumnDef="category">
       <th
         mat-header-cell
@@ -11,18 +9,25 @@
       <td mat-cell *matCellDef="let element" class="px-4 py-2 font-medium">
         {{ element.category }}
       </td>
+      <td mat-footer-cell *matFooterCellDef class="px-4 py-2 font-bold text-lg bg-gray-50">
+        Total Spend
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="ideal">
       <th mat-header-cell *matHeaderCellDef class="bg-gray-100 px-4 py-2 font-semibold">
         Ideal Amount
       </th>
-      <td mat-cell *matCellDef="let element" class="px-4 py-2">{{ element.ideal }}</td>
+      <td mat-cell *matCellDef="let element" class="px-4 py-2">
+        {{ (element.goal / 100) * totalIncome() | number: '1.2-2' }}
+      </td>
+      <td mat-footer-cell *matFooterCellDef class="bg-gray-50"></td>
     </ng-container>
 
     <ng-container matColumnDef="goal">
       <th mat-header-cell *matHeaderCellDef class="bg-gray-100 px-4 py-2 font-semibold">Goal</th>
-      <td mat-cell *matCellDef="let element" class="px-4 py-2">{{ element.goal }}</td>
+      <td mat-cell *matCellDef="let element" class="px-4 py-2">{{ element.goal }}%</td>
+      <td mat-footer-cell *matFooterCellDef class="bg-gray-50"></td>
     </ng-container>
 
     <ng-container matColumnDef="actual">
@@ -31,35 +36,61 @@
         mat-cell
         *matCellDef="let element"
         [ngClass]="{
-          'text-red-500 font-semibold': element.actual !== element.goal,
-          'text-green-600 font-semibold': element.actual === element.goal,
+          'text-red-700 font-semibold':
+            (element.actual > element.goal && element.category != 'FUTURE YOU') ||
+            (element.actual < element.goal && element.category == 'FUTURE YOU'),
+          'text-green-600 font-semibold':
+            (element.actual < element.goal && element.category != 'FUTURE YOU') ||
+            (element.actual >= element.goal && element.category == 'FUTURE YOU'),
         }"
         class="px-4 py-2"
       >
-        {{ element.actual }}
+        {{ element.actual | number: '1.2-2' }}%
       </td>
+      <td mat-footer-cell *matFooterCellDef class="bg-gray-50"></td>
     </ng-container>
 
     <ng-container matColumnDef="spent">
       <th mat-header-cell *matHeaderCellDef class="bg-gray-100 px-4 py-2 font-semibold">
         Total Spent
       </th>
-      <td mat-cell *matCellDef="let element" class="px-4 py-2">{{ element.spent }}</td>
+      <td mat-cell *matCellDef="let element" class="px-4 py-2">
+        {{ element.spent | number: '1.2-2' }}
+      </td>
+      <td mat-footer-cell *matFooterCellDef class="px-4 py-2 text-lg font-bold bg-gray-50">
+        {{ totalSpent() | number: '1.2-2' }}
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-    <!-- Footer Row -->
-    <tr class="border-t font-bold">
-      <td colspan="4" class="px-4 py-2 text-right">Total spend</td>
-      <td class="px-4 py-2">2800</td>
-    </tr>
-
-    <tr>
-      <td colspan="5" class="px-4 py-3 bg-green-50 text-green-700 font-medium text-center">
-        Great, you’ve allocated all of your income for the month
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+  </table>
+  <table
+    mat-table
+    [dataSource]="footerData"
+    class="!bg-white !border !border-gray-100 shadow-sm/15"
+  >
+    <ng-container matColumnDef="category">
+      <td mat-cell *matCellDef="let element" class="px-4 py-2 font-bold">
+        {{ element.category }}
       </td>
-    </tr>
+    </ng-container>
+
+    <ng-container matColumnDef="spent">
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="px-4 py-2 text-lg font-bold bg-gray-50 !text-left"
+        [ngClass]="{
+          'text-red-700 font-semibold': element.spent < 0,
+          'text-green-600 font-semibold': element.spent >= 0,
+        }"
+      >
+        {{ element.spent | number: '1.2-2' }}
+      </td>
+    </ng-container>
+
+    <tr mat-row *matRowDef="let row; columns: emptyColumns"></tr>
   </table>
 </div>
