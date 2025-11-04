@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS objective
     currency_id BIGINT         NOT NULL,
     amount      DECIMAL(10, 2) NULL,
     description VARCHAR(255),
-    target      YEAR           NOT NULL,
+    target      INTEGER           NOT NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE,
