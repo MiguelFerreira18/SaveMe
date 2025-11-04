@@ -1,5 +1,6 @@
 package com.money.SaveMe.Model;
 
+import com.money.SaveMe.Validator.CurrentOrFutureYear.CurrentOrFutureYear;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -48,8 +49,7 @@ public class Objective {
     private String description;
 
     @NotNull
-    @Min(1900)
-    @Max(2100)
+    @CurrentOrFutureYear
     @Column(name = "target", nullable = false)
     private Integer target;
 
