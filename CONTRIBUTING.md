@@ -10,7 +10,7 @@ Any help is really appreaciated, being at create/improve tests and features, fix
 1. Fork the repo
 2. Clone your fork
 3. Run the project, check the [how to run](README.md#how-to-run-the-project) section
-4. Create a branch from main for your changes ```bash git checkout -b your-short-description```
+4. Create a branch from main for your changes ```$ git checkout -b your-short-description```
 5. Make your changes, and if it is possible add some tests and change the docs if needed
 6. Then commit and push. (Follow the conventional commits [guideline](https://www.conventionalcommits.org/en/v1.0.0/) )
 7. Open a pull request and link it to the relevant issue
