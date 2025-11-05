@@ -28,7 +28,6 @@ import { MatButtonModule } from '@angular/material/button';
 export class ObjectiveComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   columns: TableColumn<Objective>[] = [
-    { header: 'ID', field: 'id' },
     { header: 'Symbol', field: 'symbol' },
     { header: 'Description', field: 'description' },
     { header: 'Amount', field: 'amount' },
