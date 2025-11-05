@@ -6,6 +6,7 @@ Implementing add new feature or functionality with a focus on maintainability an
 <!-- Provide a brief summary of the changes made in this pull request -->
 
 ## 🧪 Testing
+<!-- If any were done at all -->
 <!-- Describe how the changes were tested -->
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
@@ -13,7 +14,6 @@ Implementing add new feature or functionality with a focus on maintainability an
 - [ ] All tests pass
 
 **Test Results:**
-<!-- If any were done at all -->
 - 
 
 ## ✅ Checklist
