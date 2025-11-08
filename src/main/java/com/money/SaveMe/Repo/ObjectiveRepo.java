@@ -17,6 +17,9 @@ public interface ObjectiveRepo extends CrudRepository<Objective, Long> {
     @Query("SELECT o FROM Objective o WHERE o.user.id = ?1")
     public Iterable<Objective> findAllObjectiveByUserId(String userUUID);
 
+    @Query("SELECT o FROM Objective o WHERE o.user.id = ?1 and o.target >= ?2 and o.target <= ?3")
+    public Iterable<Objective> findAllObjectiveByUserIdWithinTarget(String userId, int currentYear, int targetYear);
+
     @Query("SELECT o FROM Objective o WHERE o.user.id = ?1 AND o.currency.id = ?2")
     public Iterable<Objective> findAllObjectiveByUserIdFromCurrency(String userUUID, Long currencyId);
 
