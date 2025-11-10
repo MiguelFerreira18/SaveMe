@@ -65,7 +65,7 @@ export class BudgetTableComponent implements OnInit {
         category: 'FUTURE YOU',
         ideal: 0,
         goal: this.goalFutureYou,
-        actual: Number((20 / this.totalInvestment()) * 100),
+        actual: Number((this.totalInvestment() / this.totalIncome()) * 100),
         spent: this.totalInvestment(),
       },
       {
