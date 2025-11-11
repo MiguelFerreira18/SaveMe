@@ -12,6 +12,9 @@ import com.money.SaveMe.Repo.UserRepo;
 import com.money.SaveMe.Utils.AuthenticationServiceUtil;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 @Service
 public class ObjectiveService {
     private ObjectiveRepo objectiveRepo;
@@ -30,6 +33,14 @@ public class ObjectiveService {
         String userId = authenticationServiceUtil.getCurrentUserUuid();
         return objectiveRepo.findAllObjectiveByUserId(userId);
    }
+
+   public Iterable<Objective> getAllObjectivesTillYear(int yearRange) {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        int currentYear = now.getYear();
+        int targetYear = currentYear + yearRange;
+        String userId = authenticationServiceUtil.getCurrentUserUuid();
+        return objectiveRepo.findAllObjectiveByUserIdWithinTarget(userId, currentYear, targetYear);
+    }
 
    public Objective getObjectiveById(Long id){
         String userId = authenticationServiceUtil.getCurrentUserUuid();

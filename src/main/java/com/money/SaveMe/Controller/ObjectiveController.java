@@ -31,8 +31,8 @@ public class ObjectiveController {
 
     @GetMapping("/all")
     @Transactional
-    public ResponseEntity<Iterable<ObjectiveOutputDto>> getAllObjectiveByUserIdFromCurrency() {
-        Iterable<Objective> objectives = objectiveService.getAllObjectives();
+    public ResponseEntity<Iterable<ObjectiveOutputDto>> getAllObjectiveByUserIdFromCurrency(@RequestParam(name = "rangeYears", required = false, defaultValue = "-1") int rangeYears) {
+        Iterable<Objective> objectives = rangeYears == -1 ? objectiveService.getAllObjectives() : objectiveService.getAllObjectivesTillYear(rangeYears);
 
         if (objectives == null || !objectives.iterator().hasNext()) {
             return ResponseEntity.notFound().build();
